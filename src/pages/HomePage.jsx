@@ -77,8 +77,10 @@ function HomePage() {
 
       {/* Categories Section */}
       <Container sx={{ py: 8 }}>
-        {/* Render each category as a horizontal section */}
-        {data?.categories?.map((category) => {
+        {/* Render each category as a horizontal section, sorted by project count */}
+        {data?.categories
+          ?.sort((a, b) => b.projectCount - a.projectCount)
+          .map((category) => {
             // Get projects for this category
             const categoryProjects = data.projects.filter(p => p.category === category.name);
 

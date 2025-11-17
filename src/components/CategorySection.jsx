@@ -6,11 +6,12 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import ProjectThumbnail from "./ProjectThumbnail";
 
 function CategorySection({ category, projects }) {
-  // Responsive carousel
+  // Responsive carousel with proper loop configuration
   const [emblaRef, embla] = useEmblaCarousel({
     loop: true,
     align: "start",
     skipSnaps: false,
+    slidesToScroll: 1,
   });
 
   const scrollPrev = () => embla && embla.scrollPrev();
@@ -52,34 +53,14 @@ function CategorySection({ category, projects }) {
         {category.displayName}
       </Typography>
 
-      {/* Carousel Wrapper */}
-      <Box sx={{ position: "relative", width: "100%" }}>
-        {needsCarousel && (
-          <IconButton
-            onClick={scrollPrev}
-            sx={{
-              position: "absolute",
-              left: -20,
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-              backgroundColor: "rgba(38, 31, 49, 0.9)",
-              color: "primary.main",
-              "&:hover": { backgroundColor: "rgba(38, 31, 49, 0.95)" },
-            }}
-          >
-            <ChevronLeft sx={{ fontSize: "2rem" }} />
-          </IconButton>
-        )}
-
+      {/* Embla Carousel Container */}
+      <Box sx={{ position: "relative", width: "100%", mb: 3 }}>
         {/* Embla Viewport */}
         <Box
           ref={emblaRef}
           sx={{
             overflow: "hidden",
             width: "100%",
-            pb: 2,
-            mb: 3,
           }}
         >
           <Box
@@ -111,49 +92,67 @@ function CategorySection({ category, projects }) {
           </Box>
         </Box>
 
+        {/* Navigation Buttons - positioned relative to embla viewport */}
         {needsCarousel && (
-          <IconButton
-            onClick={scrollNext}
-            sx={{
-              position: "absolute",
-              right: -20,
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-              backgroundColor: "rgba(38, 31, 49, 0.9)",
-              color: "primary.main",
-              "&:hover": { backgroundColor: "rgba(38, 31, 49, 0.95)" },
-            }}
-          >
-            <ChevronRight sx={{ fontSize: "2rem" }} />
-          </IconButton>
+          <>
+            <IconButton
+              onClick={scrollPrev}
+              sx={{
+                position: "absolute",
+                left: -20,
+                top: "50%",
+                transform: "translateY(-50%)",
+                zIndex: 2,
+                backgroundColor: "rgba(38, 31, 49, 0.9)",
+                color: "primary.main",
+                "&:hover": { backgroundColor: "rgba(38, 31, 49, 0.95)" },
+              }}
+            >
+              <ChevronLeft sx={{ fontSize: "2rem" }} />
+            </IconButton>
+            <IconButton
+              onClick={scrollNext}
+              sx={{
+                position: "absolute",
+                right: -20,
+                top: "50%",
+                transform: "translateY(-50%)",
+                zIndex: 2,
+                backgroundColor: "rgba(38, 31, 49, 0.9)",
+                color: "primary.main",
+                "&:hover": { backgroundColor: "rgba(38, 31, 49, 0.95)" },
+              }}
+            >
+              <ChevronRight sx={{ fontSize: "2rem" }} />
+            </IconButton>
+          </>
         )}
+      </Box>
 
-        {/* See More */}
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            component={Link}
-            to={`/category/${category.name}`}
-            variant="outlined"
-            size="large"
-            sx={{
+      {/* See More */}
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Button
+          component={Link}
+          to={`/category/${category.name}`}
+          variant="outlined"
+          size="large"
+          sx={{
+            borderColor: "primary.main",
+            color: "primary.main",
+            fontWeight: 600,
+            px: 4,
+            py: 1.5,
+            "&:hover": {
+              backgroundColor: "primary.main",
+              color: "background.paper",
               borderColor: "primary.main",
-              color: "primary.main",
-              fontWeight: 600,
-              px: 4,
-              py: 1.5,
-              "&:hover": {
-                backgroundColor: "primary.main",
-                color: "background.paper",
-                borderColor: "primary.main",
-                transform: "scale(1.05)",
-              },
-              transition: "all 0.3s ease",
-            }}
-          >
-            See More
-          </Button>
-        </Box>
+              transform: "scale(1.05)",
+            },
+            transition: "all 0.3s ease",
+          }}
+        >
+          See More
+        </Button>
       </Box>
     </Box>
   );

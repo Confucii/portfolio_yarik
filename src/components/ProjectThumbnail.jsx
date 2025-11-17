@@ -11,9 +11,8 @@ function ProjectThumbnail({ project }) {
       to={`/project/${project.category}/${project.id}`}
       sx={{
         position: 'relative',
-        width: 300,
-        height: 300,
-        flexShrink: 0,
+        width: '100%',
+        paddingBottom: '100%', // Creates a 1:1 aspect ratio
         overflow: 'hidden',
         borderRadius: 1,
         backgroundColor: 'background.default',
@@ -31,6 +30,9 @@ function ProjectThumbnail({ project }) {
         src={`${import.meta.env.BASE_URL}${project.thumbnail}`}
         alt={project.title}
         sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
           width: '100%',
           height: '100%',
           objectFit: 'cover',

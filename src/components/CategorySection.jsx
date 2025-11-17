@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Link } from "react-router-dom";
 import { Box, IconButton, Typography, Button } from "@mui/material";
@@ -11,37 +11,36 @@ function CategorySection({ category, projects }) {
     loop: true,
     align: "start",
     skipSnaps: false,
-    slidesToScroll: 1,
-    containScroll: false,
   });
 
   const scrollPrev = () => embla && embla.scrollPrev();
   const scrollNext = () => embla && embla.scrollNext();
 
   // Calculate items per view based on screen size
-  const getItemsPerView = () => {
+  const [itemsPerView, setItemsPerView] = useState(() => {
     if (typeof window === 'undefined') return 4;
     const width = window.innerWidth;
-    if (width < 600) return 1; // mobile
-    if (width < 960) return 2; // tablet
-    if (width < 1280) return 3; // small desktop
-    return 4; // large desktop
-  };
+    if (width < 600) return 1;
+    if (width < 960) return 2;
+    if (width < 1280) return 3;
+    return 4;
+  });
 
-  const itemsPerView = getItemsPerView();
   const needsCarousel = projects.length > itemsPerView;
 
-  // Re-initialize carousel on window resize
+  // Update items per view on resize
   useEffect(() => {
-    if (!embla) return;
-
     const handleResize = () => {
-      embla.reInit();
+      const width = window.innerWidth;
+      if (width < 600) setItemsPerView(1);
+      else if (width < 960) setItemsPerView(2);
+      else if (width < 1280) setItemsPerView(3);
+      else setItemsPerView(4);
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [embla]);
+  }, []);
 
   return (
     <Box sx={{ mb: 8 }}>
@@ -61,7 +60,8 @@ function CategorySection({ category, projects }) {
             sx={{
               position: "absolute",
               left: -20,
-              top: "40%",
+              top: "50%",
+              transform: "translateY(-50%)",
               zIndex: 2,
               backgroundColor: "rgba(38, 31, 49, 0.9)",
               color: "primary.main",
@@ -86,8 +86,6 @@ function CategorySection({ category, projects }) {
             sx={{
               display: "flex",
               gap: 3, // 24px gap between items
-              pl: "20px", // matches outer container padding
-              pr: "20px", // matches outer container padding
             }}
           >
             {projects.map((project) => (
@@ -119,7 +117,8 @@ function CategorySection({ category, projects }) {
             sx={{
               position: "absolute",
               right: -20,
-              top: "40%",
+              top: "50%",
+              transform: "translateY(-50%)",
               zIndex: 2,
               backgroundColor: "rgba(38, 31, 49, 0.9)",
               color: "primary.main",

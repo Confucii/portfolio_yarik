@@ -50,7 +50,7 @@ function HomePage() {
       {/* Hero Section */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #261F31 0%, #1A1522 100%)',
+          backgroundColor: 'primary.main',
           py: { xs: 8, md: 12 },
           textAlign: 'center',
         }}
@@ -60,16 +60,13 @@ function HomePage() {
             variant="h1"
             sx={{
               mb: 2,
-              background: 'linear-gradient(135deg, #E091CC 0%, #F0A1DC 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: 'secondary.dark',
               fontSize: { xs: '2.5rem', md: '4rem' },
             }}
           >
             Welcome to My Portfolio
           </Typography>
-          <Typography variant="h5" color="text.secondary" sx={{ maxWidth: 700, mx: 'auto' }}>
+          <Typography variant="h5" sx={{ maxWidth: 700, mx: 'auto', color: 'secondary.main' }}>
             Explore my creative work across various disciplines
           </Typography>
         </Container>

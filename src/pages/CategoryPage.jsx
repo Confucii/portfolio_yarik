@@ -12,6 +12,8 @@ import {
   Button,
   Dialog,
   IconButton,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   ArrowBack,
@@ -24,6 +26,8 @@ import YouTubeEmbed from "../components/YouTubeEmbed";
 function CategoryPage() {
   const { categoryName } = useParams();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -62,6 +66,9 @@ function CategoryPage() {
   }, [location.hash, loading]);
 
   const handleOpenLightbox = (projectId, index) => {
+    // Don't open lightbox on mobile devices
+    if (isMobile) return;
+
     setLightboxProjectId(projectId);
     setLightboxIndex(index);
     setLightboxOpen(true);
@@ -234,7 +241,7 @@ function CategoryPage() {
                         <Grid item {...gridSizes} key={index}>
                           <Card
                             sx={{
-                              cursor: "pointer",
+                              cursor: isMobile ? "default" : "pointer",
                             }}
                             onClick={() =>
                               handleOpenLightbox(project.id, index)

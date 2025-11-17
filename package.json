@@ -10,9 +10,18 @@
     "optimize-images": "node scripts/optimize-images.js",
     "generate-data": "node scripts/generate-data.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "@mui/material": "^5.14.0",
+    "@mui/icons-material": "^5.14.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0"
+  },
   "devDependencies": {
     "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.2.0",
     "sharp": "^0.33.0",
     "glob": "^10.3.0"
   }

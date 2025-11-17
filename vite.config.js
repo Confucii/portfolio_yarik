@@ -1,18 +1,11 @@
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  plugins: [react()],
   base: '/portfolio_yarik/',
   build: {
-    outDir: 'dist',
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        about: resolve(__dirname, 'about.html'),
-        category: resolve(__dirname, 'category.html'),
-        project: resolve(__dirname, 'project.html')
-      }
-    }
+    outDir: 'dist'
   },
   server: {
     port: 3000,

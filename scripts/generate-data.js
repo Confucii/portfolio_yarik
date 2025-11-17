@@ -4,7 +4,6 @@ import fs from 'fs/promises';
 
 const PORTFOLIO_DIR = 'portfolio';
 const OUTPUT_FILE = 'data.json';
-const GITHUB_REPO = 'Confucii/portfolio_yarik'; // Will be used for release URLs
 
 async function generateData() {
   console.log('📊 Scanning portfolio folders...\n');
@@ -42,7 +41,7 @@ async function generateData() {
         images.push(...found);
       }
 
-      // Prefer WebP versions
+      // Prefer WebP versions if they exist
       images = images.filter((img, idx, arr) => {
         const basename = path.basename(img, path.extname(img));
         const webpVersion = arr.find(i => i.includes(`${basename}.webp`));
@@ -52,73 +51,25 @@ async function generateData() {
         return true;
       });
 
-      // Determine image source strategy
-      const releaseVersion = metadata.releaseVersion || null;
-      const useReleases = releaseVersion !== null;
+      // Sort images by filename
+      images.sort();
 
       // Build image URLs
-      let imageList = [];
+      const imageList = images.map(img => ({
+        name: path.basename(img),
+        url: `/portfolio_yarik/${img}`,
+        path: img
+      }));
+
+      // Determine thumbnail
       let thumbnailUrl = null;
-
-      if (useReleases) {
-        // Images hosted on GitHub Releases
-        // Expected URL pattern: https://github.com/USER/REPO/releases/download/VERSION/CATEGORY_PROJECT_filename.ext
-        const baseReleaseUrl = `https://github.com/${GITHUB_REPO}/releases/download/${releaseVersion}`;
-
-        // Read image list from metadata if provided, otherwise use found images
-        const imageFiles = metadata.images || images.map(img => path.basename(img));
-
-        imageList = imageFiles.map(filename => {
-          // If it's already a full path, extract just the filename
-          const fname = typeof filename === 'string' ? filename : filename.name || filename;
-          const basename = path.basename(fname);
-          const releaseFilename = `${category}_${projectFolder}_${basename}`;
-
-          return {
-            name: basename,
-            url: `${baseReleaseUrl}/${releaseFilename}`,
-            source: 'release'
-          };
-        });
-
-        // Thumbnail from releases: use specified thumbnail or first image
-        if (metadata.thumbnail) {
-          // User specified a thumbnail filename
-          const thumbnailFilename = `${category}_${projectFolder}_${metadata.thumbnail}`;
-          thumbnailUrl = `${baseReleaseUrl}/${thumbnailFilename}`;
-        } else if (imageList.length > 0) {
-          // Use first image as thumbnail
-          thumbnailUrl = imageList[0].url;
-        }
-      } else {
-        // Images in repository (development/fallback mode)
-        imageList = images.map(img => ({
-          name: path.basename(img),
-          url: `/portfolio_yarik/${img}`,
-          source: 'repo'
-        }));
-
-        // Check for local thumbnail
-        const thumbnailPatterns = [
-          `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.webp`,
-          `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.jpg`,
-          `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.png`
-        ];
-
-        for (const pattern of thumbnailPatterns) {
-          try {
-            await fs.access(pattern);
-            thumbnailUrl = `/portfolio_yarik/${pattern}`;
-            break;
-          } catch {
-            continue;
-          }
-        }
-
-        // Fallback to first image if no thumbnail found
-        if (!thumbnailUrl && imageList.length > 0) {
-          thumbnailUrl = imageList[0].url;
-        }
+      if (metadata.thumbnail) {
+        // User specified thumbnail
+        const thumbnailPath = `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/${metadata.thumbnail}`;
+        thumbnailUrl = `/portfolio_yarik/${thumbnailPath}`;
+      } else if (imageList.length > 0) {
+        // Use first image as thumbnail
+        thumbnailUrl = imageList[0].url;
       }
 
       // Build project object
@@ -128,11 +79,9 @@ async function generateData() {
         description: metadata.description || '',
         category: category,
         path: `${PORTFOLIO_DIR}/${category}/${projectFolder}`,
-        // Thumbnail from releases or repo
         thumbnail: thumbnailUrl,
         images: imageList,
-        releaseVersion: releaseVersion,
-        imageSource: useReleases ? 'release' : 'repo'
+        imageCount: imageList.length
       };
 
       projects.push(project);
@@ -147,7 +96,7 @@ async function generateData() {
       }
       categories.get(category).projectCount++;
 
-      console.log(`✓ ${category}/${projectFolder} - ${metadata.title}`);
+      console.log(`✓ ${category}/${projectFolder} - ${metadata.title} (${imageList.length} images)`);
     } catch (error) {
       console.error(`✗ Error processing ${metadataPath}:`, error.message);
     }
@@ -157,7 +106,9 @@ async function generateData() {
   const data = {
     generated: new Date().toISOString(),
     categories: Array.from(categories.values()),
-    projects: projects.sort((a, b) => a.title.localeCompare(b.title))
+    projects: projects.sort((a, b) => a.title.localeCompare(b.title)),
+    totalProjects: projects.length,
+    totalImages: projects.reduce((sum, p) => sum + p.imageCount, 0)
   };
 
   // Write data.json
@@ -166,6 +117,7 @@ async function generateData() {
   console.log(`\n✨ Generated ${OUTPUT_FILE}`);
   console.log(`   Categories: ${categories.size}`);
   console.log(`   Projects: ${projects.length}`);
+  console.log(`   Total images: ${data.totalImages}`);
 }
 
 function formatCategoryName(category) {

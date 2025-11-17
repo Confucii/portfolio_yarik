@@ -30,8 +30,5 @@ Thumbs.db
 # Generated data
 data.json
 
-# Release files (prepared for GitHub Releases upload)
-releases/
-
-# All images in portfolio (hosted on GitHub Releases)
-portfolio/**/images/
+# Temporary optimization files (optional - only if you want to exclude WebP versions)
+# portfolio/**/images/*.webp

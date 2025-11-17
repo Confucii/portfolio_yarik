@@ -1,9 +1,6 @@
 {
   "title": "Example 3D Project",
-  "description": "This is an example project. Replace with your own projects! Only metadata.json is stored in the repo - images are hosted on GitHub Releases.",
+  "description": "This is an example project. Replace with your own! Add your images to the images/ folder and commit everything together.",
   "category": "3D",
-  "_comment": "After uploading images to GitHub Releases, add:",
-  "_releaseVersion": "v20250117",
-  "_thumbnail": "first_image.png (optional - defaults to first image)",
-  "_images": ["image1.png", "image2.png", "image3.png"]
+  "thumbnail": "image1.png"
 }

@@ -11,9 +11,8 @@ function ProjectThumbnail({ project }) {
       to={`/project/${project.category}/${project.id}`}
       sx={{
         position: 'relative',
-        width: 300,
-        height: 300,
-        flexShrink: 0,
+        width: '100%',
+        aspectRatio: '1 / 1', // Creates a 1:1 aspect ratio
         overflow: 'hidden',
         borderRadius: 1,
         backgroundColor: 'background.default',

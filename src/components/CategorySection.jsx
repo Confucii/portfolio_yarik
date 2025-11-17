@@ -1,8 +1,59 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, IconButton } from "@mui/material";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import ProjectThumbnail from "./ProjectThumbnail";
 
 function CategorySection({ category, projects }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Calculate items per view based on screen size
+  // Assuming each ProjectThumbnail is ~300px wide with 24px gap
+  const getItemsPerView = () => {
+    if (typeof window === 'undefined') return 3;
+    const width = window.innerWidth;
+    if (width < 600) return 1; // mobile
+    if (width < 960) return 2; // tablet
+    if (width < 1280) return 3; // small desktop
+    return 4; // large desktop
+  };
+
+  const [itemsPerView, setItemsPerView] = useState(getItemsPerView());
+
+  // Update items per view on window resize
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleResize = () => {
+      setItemsPerView(getItemsPerView());
+      setCurrentIndex(0); // Reset to first slide on resize
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const totalSlides = Math.ceil(projects.length / itemsPerView);
+  const canGoPrev = currentIndex > 0;
+  const canGoNext = currentIndex < totalSlides - 1;
+
+  const handlePrev = () => {
+    if (canGoPrev) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (canGoNext) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const visibleProjects = projects.slice(
+    currentIndex * itemsPerView,
+    (currentIndex + 1) * itemsPerView
+  );
+
   return (
     <Box sx={{ mb: 8 }}>
       {/* Divider */}
@@ -27,42 +78,85 @@ function CategorySection({ category, projects }) {
         </Typography>
       </Box>
 
-      {/* Horizontal scrolling container */}
+      {/* Carousel Container */}
       <Box
         sx={{
           position: "relative",
           width: "100%",
         }}
       >
-        {/* Projects row */}
+        {/* Left Arrow */}
+        <IconButton
+          onClick={handlePrev}
+          disabled={!canGoPrev}
+          sx={{
+            position: "absolute",
+            left: -20,
+            top: "40%",
+            transform: "translateY(-50%)",
+            zIndex: 2,
+            backgroundColor: "rgba(38, 31, 49, 0.9)",
+            color: "primary.main",
+            "&:hover": {
+              backgroundColor: "rgba(38, 31, 49, 0.95)",
+            },
+            "&.Mui-disabled": {
+              opacity: 0.3,
+              color: "text.secondary",
+            },
+          }}
+        >
+          <ChevronLeft sx={{ fontSize: "2rem" }} />
+        </IconButton>
+
+        {/* Projects carousel */}
         <Box
           sx={{
             display: "flex",
             gap: 3,
-            overflowX: "auto",
             padding: "20px",
             pb: 2,
             mb: 3,
-            "&::-webkit-scrollbar": {
-              height: 8,
+            overflow: "hidden",
+            justifyContent: projects.length < itemsPerView ? "flex-start" : "space-between",
+          }}
+        >
+          {visibleProjects.map((project) => (
+            <Box
+              key={project.id}
+              sx={{
+                flex: `0 0 calc((100% - ${(itemsPerView - 1) * 24}px) / ${itemsPerView})`,
+                minWidth: 0,
+              }}
+            >
+              <ProjectThumbnail project={project} />
+            </Box>
+          ))}
+        </Box>
+
+        {/* Right Arrow */}
+        <IconButton
+          onClick={handleNext}
+          disabled={!canGoNext}
+          sx={{
+            position: "absolute",
+            right: -20,
+            top: "40%",
+            transform: "translateY(-50%)",
+            zIndex: 2,
+            backgroundColor: "rgba(38, 31, 49, 0.9)",
+            color: "primary.main",
+            "&:hover": {
+              backgroundColor: "rgba(38, 31, 49, 0.95)",
             },
-            "&::-webkit-scrollbar-track": {
-              backgroundColor: "rgba(224, 145, 204, 0.1)",
-              borderRadius: 4,
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "primary.main",
-              borderRadius: 4,
-              "&:hover": {
-                backgroundColor: "primary.light",
-              },
+            "&.Mui-disabled": {
+              opacity: 0.3,
+              color: "text.secondary",
             },
           }}
         >
-          {projects.map((project) => (
-            <ProjectThumbnail key={project.id} project={project} />
-          ))}
-        </Box>
+          <ChevronRight sx={{ fontSize: "2rem" }} />
+        </IconButton>
 
         {/* See More Button */}
         <Box sx={{ display: "flex", justifyContent: "center" }}>

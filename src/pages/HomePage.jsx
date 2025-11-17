@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Container,
   Typography,
   Box,
   Grid,
-  Card,
-  CardContent,
-  CardActionArea,
   CircularProgress,
   Alert,
 } from '@mui/material';
-import { Folder as FolderIcon } from '@mui/icons-material';
+import CategoryCard from '../components/CategoryCard';
 
 function HomePage() {
   const [data, setData] = useState(null);
@@ -87,37 +83,16 @@ function HomePage() {
         </Typography>
 
         <Grid container spacing={4}>
-          {data?.categories?.map((category) => (
-            <Grid item xs={12} sm={6} md={4} key={category.name}>
-              <Card>
-                <CardActionArea
-                  component={Link}
-                  to={`/category/${category.name}`}
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      py: 4,
-                      backgroundColor: 'background.default',
-                    }}
-                  >
-                    <FolderIcon sx={{ fontSize: 80, color: 'primary.main' }} />
-                  </Box>
-                  <CardContent sx={{ textAlign: 'center', flexGrow: 1 }}>
-                    <Typography variant="h5" gutterBottom>
-                      {category.displayName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {category.projectCount} {category.projectCount === 1 ? 'project' : 'projects'}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          ))}
+          {data?.categories?.map((category) => {
+            // Get projects for this category
+            const categoryProjects = data.projects.filter(p => p.category === category.name);
+
+            return (
+              <Grid item xs={12} sm={6} md={4} key={category.name}>
+                <CategoryCard category={category} projects={categoryProjects} />
+              </Grid>
+            );
+          })}
         </Grid>
       </Container>
     </>

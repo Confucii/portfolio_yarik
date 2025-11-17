@@ -11,7 +11,6 @@ function Header() {
     { name: '3D', path: '/category/3D' },
     { name: 'Physical', path: '/category/physical' },
     { name: 'Works You Might Have Seen', path: '/category/works_you_might_have_seen' },
-    { name: 'About', path: '/about' },
   ];
 
   const handleMobileMenuToggle = () => {

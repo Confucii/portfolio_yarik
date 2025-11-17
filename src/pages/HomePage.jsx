@@ -5,9 +5,7 @@ import {
   Box,
   CircularProgress,
   Alert,
-  Button,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
 import CategorySection from '../components/CategorySection';
 
 function HomePage() {
@@ -71,40 +69,14 @@ function HomePage() {
           >
             Welcome to My Portfolio
           </Typography>
-          <Typography variant="h5" color="text.secondary" sx={{ maxWidth: 700, mx: 'auto', mb: 4 }}>
+          <Typography variant="h5" color="text.secondary" sx={{ maxWidth: 700, mx: 'auto' }}>
             Explore my creative work across various disciplines
           </Typography>
-          <Button
-            component={Link}
-            to="/about"
-            variant="outlined"
-            size="large"
-            sx={{
-              borderColor: 'primary.main',
-              color: 'primary.main',
-              fontWeight: 600,
-              px: 4,
-              py: 1.5,
-              '&:hover': {
-                backgroundColor: 'primary.main',
-                color: 'background.paper',
-                borderColor: 'primary.main',
-                transform: 'scale(1.05)',
-              },
-              transition: 'all 0.3s ease',
-            }}
-          >
-            About Me
-          </Button>
         </Container>
       </Box>
 
       {/* Categories Section */}
       <Container sx={{ py: 8 }}>
-        <Typography variant="h2" align="center" gutterBottom sx={{ mb: 6 }}>
-          Browse by Category
-        </Typography>
-
         {/* Render each category as a horizontal section, sorted by project count */}
         {data?.categories
           ?.sort((a, b) => b.projectCount - a.projectCount)

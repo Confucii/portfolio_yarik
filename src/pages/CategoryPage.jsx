@@ -260,16 +260,18 @@ function CategoryPage() {
             </IconButton>
 
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: { xs: '50vh', sm: '70vh' } }}>
-              <IconButton
-                onClick={handlePrevious}
-                sx={{
-                  position: 'absolute',
-                  left: 8,
-                  color: 'primary.main',
-                }}
-              >
-                <ChevronLeft fontSize="large" />
-              </IconButton>
+              {currentLightboxProject.images.length > 1 && (
+                <IconButton
+                  onClick={handlePrevious}
+                  sx={{
+                    position: 'absolute',
+                    left: 8,
+                    color: 'primary.main',
+                  }}
+                >
+                  <ChevronLeft fontSize="large" />
+                </IconButton>
+              )}
 
               <Box
                 component="img"
@@ -282,21 +284,25 @@ function CategoryPage() {
                 }}
               />
 
-              <IconButton
-                onClick={handleNext}
-                sx={{
-                  position: 'absolute',
-                  right: 8,
-                  color: 'primary.main',
-                }}
-              >
-                <ChevronRight fontSize="large" />
-              </IconButton>
+              {currentLightboxProject.images.length > 1 && (
+                <IconButton
+                  onClick={handleNext}
+                  sx={{
+                    position: 'absolute',
+                    right: 8,
+                    color: 'primary.main',
+                  }}
+                >
+                  <ChevronRight fontSize="large" />
+                </IconButton>
+              )}
             </Box>
 
-            <Typography align="center" color="text.secondary" sx={{ mt: 2 }}>
-              {lightboxIndex + 1} / {currentLightboxProject.images.length}
-            </Typography>
+            {currentLightboxProject.images.length > 1 && (
+              <Typography align="center" color="text.secondary" sx={{ mt: 2 }}>
+                {lightboxIndex + 1} / {currentLightboxProject.images.length}
+              </Typography>
+            )}
           </Box>
         )}
       </Dialog>

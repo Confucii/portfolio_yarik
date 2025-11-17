@@ -17,9 +17,17 @@ function Header() {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        Portfolio
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, my: 2 }}>
+        <Box
+          component="img"
+          src="/portfolio_yarik/logo.svg"
+          alt="Logo"
+          sx={{ height: 32, width: 'auto' }}
+        />
+        <Typography variant="h6">
+          Portfolio
+        </Typography>
+      </Box>
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.label} disablePadding>
@@ -36,19 +44,37 @@ function Header() {
     <>
       <AppBar position="sticky" color="secondary" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Toolbar>
-          <Typography
-            variant="h6"
+          <Box
             component={Link}
             to="/"
             sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
               flexGrow: 1,
               textDecoration: 'none',
               color: 'text.primary',
-              fontWeight: 700,
             }}
           >
-            Portfolio
-          </Typography>
+            <Box
+              component="img"
+              src="/portfolio_yarik/logo.svg"
+              alt="Logo"
+              sx={{
+                height: 40,
+                width: 'auto',
+                display: { xs: 'none', sm: 'block' }
+              }}
+            />
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 700,
+              }}
+            >
+              Portfolio
+            </Typography>
+          </Box>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {menuItems.map((item) => (
               <Button

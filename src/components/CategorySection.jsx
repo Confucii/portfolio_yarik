@@ -5,6 +5,15 @@ import ProjectThumbnail from "./ProjectThumbnail";
 function CategorySection({ category, projects }) {
   return (
     <Box sx={{ mb: 8 }}>
+      {/* Divider */}
+      <Box
+        sx={{
+          height: 2,
+          backgroundColor: "primary.main",
+          mb: 4,
+        }}
+      />
+
       {/* Category Title */}
       <Box
         sx={{
@@ -81,16 +90,6 @@ function CategorySection({ category, projects }) {
           </Button>
         </Box>
       </Box>
-
-      {/* Divider */}
-      <Box
-        sx={{
-          mt: 6,
-          height: 2,
-          background:
-            "linear-gradient(90deg, transparent, rgba(224, 145, 204, 0.3), transparent)",
-        }}
-      />
     </Box>
   );
 }

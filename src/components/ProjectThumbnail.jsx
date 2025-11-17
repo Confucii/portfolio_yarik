@@ -13,7 +13,6 @@ function ProjectThumbnail({ project }) {
         position: 'relative',
         width: '100%',
         aspectRatio: '1 / 1', // Creates a 1:1 aspect ratio
-        overflow: 'hidden',
         textDecoration: 'none',
         cursor: 'pointer',
       }}

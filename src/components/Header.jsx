@@ -24,7 +24,7 @@ function Header() {
     >
       <Toolbar
         sx={{
-          minHeight: { xs: 80, sm: 100, md: 120 },
+          minHeight: { xs: 64, sm: 72, md: 88 },
           px: { xs: 2, sm: 3, md: 4 },
           gap: { xs: 2, md: 4 },
         }}
@@ -35,7 +35,6 @@ function Header() {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: { xs: 1.5, md: 2 },
             textDecoration: 'none',
             color: 'text.primary',
             flexShrink: 0,
@@ -50,16 +49,6 @@ function Header() {
               width: 'auto',
             }}
           />
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' },
-              display: { xs: 'none', sm: 'block' },
-            }}
-          >
-            Portfolio
-          </Typography>
         </Box>
 
         <Box
@@ -79,9 +68,9 @@ function Header() {
               sx={{
                 color: location.pathname === category.path ? 'primary.main' : 'text.primary',
                 fontWeight: location.pathname === category.path ? 700 : 500,
-                fontSize: { xs: '0.875rem', md: '1rem' },
-                px: { xs: 1.5, md: 2 },
-                py: { xs: 0.75, md: 1 },
+                fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
+                px: { xs: 1.5, md: 2.5 },
+                py: { xs: 1, md: 1.25 },
                 textTransform: 'none',
                 borderBottom: location.pathname === category.path ? 2 : 0,
                 borderColor: 'primary.main',

@@ -52,7 +52,6 @@ function HomePage() {
         sx={{
           backgroundColor: 'secondary.main',
           py: { xs: 8, md: 12 },
-          textAlign: 'center',
         }}
       >
         <Container>
@@ -66,7 +65,7 @@ function HomePage() {
           >
             Welcome to My Portfolio
           </Typography>
-          <Typography variant="h5" sx={{ maxWidth: 700, mx: 'auto', color: 'text.primary' }}>
+          <Typography variant="h5" sx={{ maxWidth: 700, color: 'text.primary' }}>
             Explore my creative work across various disciplines
           </Typography>
         </Container>

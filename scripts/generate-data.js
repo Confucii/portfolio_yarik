@@ -81,7 +81,8 @@ async function generateData() {
         path: `${PORTFOLIO_DIR}/${category}/${projectFolder}`,
         thumbnail: thumbnailUrl,
         images: imageList,
-        imageCount: imageList.length
+        imageCount: imageList.length,
+        video: metadata.video || null
       };
 
       projects.push(project);

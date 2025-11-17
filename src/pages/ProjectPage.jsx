@@ -14,6 +14,7 @@ import {
   CardMedia,
 } from '@mui/material';
 import { ArrowBack, Close, ChevronLeft, ChevronRight } from '@mui/icons-material';
+import YouTubeEmbed from '../components/YouTubeEmbed';
 
 function ProjectPage() {
   const { categoryName, projectId } = useParams();
@@ -154,6 +155,16 @@ function ProjectPage() {
           </Box>
         )}
       </Container>
+
+      {/* Video Section */}
+      {project.video && (
+        <Container sx={{ py: 6 }}>
+          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+            Video
+          </Typography>
+          <YouTubeEmbed url={project.video} />
+        </Container>
+      )}
 
       {/* Lightbox */}
       <Dialog

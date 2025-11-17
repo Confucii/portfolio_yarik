@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -18,6 +18,7 @@ import YouTubeEmbed from '../components/YouTubeEmbed';
 
 function CategoryPage() {
   const { categoryName } = useParams();
+  const location = useLocation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,6 +41,20 @@ function CategoryPage() {
         setLoading(false);
       });
   }, []);
+
+  // Scroll to project if hash is present
+  useEffect(() => {
+    if (location.hash && !loading) {
+      const projectId = location.hash.substring(1); // Remove the '#'
+      const element = document.getElementById(projectId);
+      if (element) {
+        // Small delay to ensure content is rendered
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [location.hash, loading]);
 
   const handleOpenLightbox = (projectId, index) => {
     setLightboxProjectId(projectId);
@@ -129,7 +144,7 @@ function CategoryPage() {
           </Box>
         ) : (
           projects.map((project, projectIndex) => (
-            <Box key={project.id}>
+            <Box key={project.id} id={project.id}>
               {/* Divider (same style as HomePage) */}
               <Box sx={{ height: 2, backgroundColor: 'primary.main', mb: 6, mt: projectIndex === 0 ? 0 : 8 }} />
 

@@ -8,7 +8,7 @@ function ProjectThumbnail({ project }) {
   return (
     <Box
       component={Link}
-      to={`/project/${project.category}/${project.id}`}
+      to={`/category/${project.category}#${project.id}`}
       sx={{
         position: 'relative',
         width: '100%',

@@ -63,10 +63,10 @@ function HomePage() {
               fontSize: { xs: '2.5rem', md: '4rem' },
             }}
           >
-            Welcome to My Portfolio
+            YarVol
           </Typography>
           <Typography variant="h5" sx={{ maxWidth: 700, color: 'text.primary' }}>
-            Explore my creative work across various disciplines
+            Hi, I'm Yaroslav Volikov. Latvian Art Academy jewelry student and independent 3D artist
           </Typography>
         </Container>
       </Box>

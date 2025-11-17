@@ -13,7 +13,7 @@ function Footer() {
     >
       <Container maxWidth="lg">
         <Typography variant="body2" color="text.secondary" align="center">
-          © {new Date().getFullYear()} Yarik. All rights reserved.
+          © {new Date().getFullYear()} YarVol. All rights reserved.
         </Typography>
       </Container>
     </Box>

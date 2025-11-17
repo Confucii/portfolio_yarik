@@ -158,7 +158,7 @@ function ProjectPage() {
                   <CardMedia
                     component="img"
                     height="100%"
-                    image={image.url}
+                    image={`${import.meta.env.BASE_URL}${image.url}`}
                     alt={`${project.title} - Image ${index + 1}`}
                     loading="lazy"
                     sx={{ objectFit: 'cover' }}
@@ -229,7 +229,7 @@ function ProjectPage() {
 
             <Box
               component="img"
-              src={project.images[lightboxIndex]?.url}
+              src={`${import.meta.env.BASE_URL}${project.images[lightboxIndex]?.url}`}
               alt={`${project.title} - Image ${lightboxIndex + 1}`}
               sx={{
                 maxWidth: '100%',

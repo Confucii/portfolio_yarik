@@ -28,7 +28,7 @@ function ProjectThumbnail({ project }) {
       {/* Static thumbnail image */}
       <Box
         component="img"
-        src={project.thumbnail}
+        src={`${import.meta.env.BASE_URL}${project.thumbnail}`}
         alt={project.title}
         sx={{
           width: '100%',

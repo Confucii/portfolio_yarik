@@ -12,6 +12,7 @@ function CategorySection({ category, projects }) {
     align: "start",
     skipSnaps: false,
     slidesToScroll: 1,
+    containScroll: false, // Disable containScroll to allow true infinite looping
   });
 
   const scrollPrev = () => embla && embla.scrollPrev();

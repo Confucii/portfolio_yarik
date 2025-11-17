@@ -21,9 +21,8 @@ function Header() {
             src="/portfolio_yarik/logo.svg"
             alt="Logo"
             sx={{
-              height: 40,
+              height: { xs: 32, sm: 40 },
               width: 'auto',
-              display: { xs: 'none', sm: 'block' }
             }}
           />
           <Typography

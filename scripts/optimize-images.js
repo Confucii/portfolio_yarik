@@ -1,20 +1,22 @@
-import sharp from 'sharp';
-import { glob } from 'glob';
-import path from 'path';
-import fs from 'fs/promises';
+import sharp from "sharp";
+import { glob } from "glob";
+import path from "path";
+import fs from "fs/promises";
 
 const WEBP_QUALITY = 85;
 
 async function optimizeImages() {
-  console.log('🖼️  Optimizing images to WebP format...\n');
-  console.log('ℹ️  This is OPTIONAL - run only if you want smaller file sizes for releases.\n');
-  console.log('   Original PNG/JPG files will be preserved.\n');
+  console.log("🖼️  Optimizing images to WebP format...\n");
+  console.log(
+    "ℹ️  This is OPTIONAL - run only if you want smaller file sizes for releases.\n"
+  );
+  console.log("   Original PNG/JPG files will be preserved.\n");
 
   // Find all PNG/JPG images in portfolio folders
   const imagePatterns = [
-    'portfolio/**/images/*.png',
-    'portfolio/**/images/*.jpg',
-    'portfolio/**/images/*.jpeg'
+    "public/portfolio/**/images/*.png",
+    "public/portfolio/**/images/*.jpg",
+    "public/portfolio/**/images/*.jpeg",
   ];
 
   let totalProcessed = 0;
@@ -46,9 +48,7 @@ async function optimizeImages() {
         const originalSize = originalStats.size;
 
         // Convert to WebP
-        await sharp(imagePath)
-          .webp({ quality: WEBP_QUALITY })
-          .toFile(webpPath);
+        await sharp(imagePath).webp({ quality: WEBP_QUALITY }).toFile(webpPath);
 
         const webpStats = await fs.stat(webpPath);
         const webpSize = webpStats.size;
@@ -56,7 +56,11 @@ async function optimizeImages() {
         const savings = ((saved / originalSize) * 100).toFixed(1);
 
         console.log(`✓ ${imagePath}`);
-        console.log(`  → ${formatBytes(originalSize)} → ${formatBytes(webpSize)} (${savings}% smaller)\n`);
+        console.log(
+          `  → ${formatBytes(originalSize)} → ${formatBytes(
+            webpSize
+          )} (${savings}% smaller)\n`
+        );
 
         totalProcessed++;
         totalSaved += saved;
@@ -69,8 +73,10 @@ async function optimizeImages() {
   }
 
   if (totalProcessed === 0) {
-    console.log('\n⚠️  No images to optimize (all WebP versions already exist)');
-    console.log('   Delete .webp files if you want to regenerate them.\n');
+    console.log(
+      "\n⚠️  No images to optimize (all WebP versions already exist)"
+    );
+    console.log("   Delete .webp files if you want to regenerate them.\n");
     return;
   }
 
@@ -78,20 +84,25 @@ async function optimizeImages() {
   console.log(`   Images processed: ${totalProcessed}`);
   console.log(`   Original size: ${formatBytes(totalOriginalSize)}`);
   console.log(`   WebP size: ${formatBytes(totalWebpSize)}`);
-  console.log(`   Total saved: ${formatBytes(totalSaved)} (${((totalSaved / totalOriginalSize) * 100).toFixed(1)}%)\n`);
-  console.log('💡 Next steps:');
-  console.log('   1. Review the .webp files to ensure quality is acceptable');
-  console.log('   2. Decide which format to upload to GitHub Releases:');
-  console.log('      - Upload WebP files (smaller, faster loading)');
-  console.log('      - Upload original PNG/JPG files (maximum quality)');
-  console.log('      - Upload both (users get WebP, fallback to original)\n');
-  console.log('   3. Run: npm run prepare-release');
+  console.log(
+    `   Total saved: ${formatBytes(totalSaved)} (${(
+      (totalSaved / totalOriginalSize) *
+      100
+    ).toFixed(1)}%)\n`
+  );
+  console.log("💡 Next steps:");
+  console.log("   1. Review the .webp files to ensure quality is acceptable");
+  console.log("   2. Decide which format to upload to GitHub Releases:");
+  console.log("      - Upload WebP files (smaller, faster loading)");
+  console.log("      - Upload original PNG/JPG files (maximum quality)");
+  console.log("      - Upload both (users get WebP, fallback to original)\n");
+  console.log("   3. Run: npm run prepare-release");
 }
 
 function formatBytes(bytes) {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return "0 B";
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
 }

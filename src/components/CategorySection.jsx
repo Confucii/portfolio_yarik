@@ -6,43 +6,32 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import ProjectThumbnail from "./ProjectThumbnail";
 
 function CategorySection({ category, projects }) {
-  // Responsive carousel with proper loop configuration
   const [emblaRef, embla] = useEmblaCarousel({
     loop: true,
-    align: "start",
-    skipSnaps: false,
-    slidesToScroll: 1,
-    containScroll: false, // Disable containScroll to allow true infinite looping
+    align: "start"
   });
 
-  const scrollPrev = () => embla && embla.scrollPrev();
-  const scrollNext = () => embla && embla.scrollNext();
+  const [canScroll, setCanScroll] = useState(false);
 
-  // Calculate items per view based on screen size
-  const [itemsPerView, setItemsPerView] = useState(() => {
-    if (typeof window === 'undefined') return 4;
-    const width = window.innerWidth;
-    if (width < 600) return 1;
-    if (width < 960) return 2;
-    if (width < 1280) return 3;
-    return 4;
-  });
-
-  const needsCarousel = projects.length > itemsPerView;
-
-  // Update items per view on resize
+  // Calculate if scrolling is possible even with loop on
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 600) setItemsPerView(1);
-      else if (width < 960) setItemsPerView(2);
-      else if (width < 1280) setItemsPerView(3);
-      else setItemsPerView(4);
+    if (!embla) return;
+
+    const checkScrollAbility = () => {
+      const scrollSnapList = embla.scrollSnapList();
+      const slideCount = scrollSnapList.length;
+
+      // Scrolling is only meaningful when >1 slides
+      setCanScroll(slideCount > 1);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    embla.on("init", checkScrollAbility);
+    embla.on("reInit", checkScrollAbility);
+    checkScrollAbility();
+  }, [embla]);
+
+  const scrollPrev = () => embla?.scrollPrev();
+  const scrollNext = () => embla?.scrollNext();
 
   return (
     <Box sx={{ mb: 8 }}>
@@ -94,7 +83,7 @@ function CategorySection({ category, projects }) {
         </Box>
 
         {/* Navigation Buttons - positioned relative to embla viewport */}
-        {needsCarousel && (
+        {canScroll && (
           <>
             <IconButton
               onClick={scrollPrev}

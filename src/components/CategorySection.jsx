@@ -34,19 +34,23 @@ function CategorySection({ category, projects }) {
   }, []);
 
   const totalSlides = Math.ceil(projects.length / itemsPerView);
-  const canGoPrev = currentIndex > 0;
-  const canGoNext = currentIndex < totalSlides - 1;
 
   const handlePrev = () => {
-    if (canGoPrev) {
-      setCurrentIndex(currentIndex - 1);
-    }
+    setCurrentIndex((prev) => {
+      if (prev === 0) {
+        return totalSlides - 1; // Loop to last slide
+      }
+      return prev - 1;
+    });
   };
 
   const handleNext = () => {
-    if (canGoNext) {
-      setCurrentIndex(currentIndex + 1);
-    }
+    setCurrentIndex((prev) => {
+      if (prev === totalSlides - 1) {
+        return 0; // Loop to first slide
+      }
+      return prev + 1;
+    });
   };
 
   const visibleProjects = projects.slice(
@@ -88,7 +92,6 @@ function CategorySection({ category, projects }) {
         {/* Left Arrow */}
         <IconButton
           onClick={handlePrev}
-          disabled={!canGoPrev}
           sx={{
             position: "absolute",
             left: -20,
@@ -99,10 +102,6 @@ function CategorySection({ category, projects }) {
             color: "primary.main",
             "&:hover": {
               backgroundColor: "rgba(38, 31, 49, 0.95)",
-            },
-            "&.Mui-disabled": {
-              opacity: 0.3,
-              color: "text.secondary",
             },
           }}
         >
@@ -119,14 +118,26 @@ function CategorySection({ category, projects }) {
             mb: 3,
             overflow: "hidden",
             justifyContent: projects.length < itemsPerView ? "flex-start" : "space-between",
+            transition: "all 0.5s ease-in-out",
           }}
         >
-          {visibleProjects.map((project) => (
+          {visibleProjects.map((project, index) => (
             <Box
-              key={project.id}
+              key={`${project.id}-${currentIndex}-${index}`}
               sx={{
                 flex: `0 0 calc((100% - ${(itemsPerView - 1) * 24}px) / ${itemsPerView})`,
                 minWidth: 0,
+                animation: "fadeIn 0.5s ease-in-out",
+                "@keyframes fadeIn": {
+                  from: {
+                    opacity: 0,
+                    transform: "scale(0.95)",
+                  },
+                  to: {
+                    opacity: 1,
+                    transform: "scale(1)",
+                  },
+                },
               }}
             >
               <ProjectThumbnail project={project} />
@@ -137,7 +148,6 @@ function CategorySection({ category, projects }) {
         {/* Right Arrow */}
         <IconButton
           onClick={handleNext}
-          disabled={!canGoNext}
           sx={{
             position: "absolute",
             right: -20,
@@ -148,10 +158,6 @@ function CategorySection({ category, projects }) {
             color: "primary.main",
             "&:hover": {
               backgroundColor: "rgba(38, 31, 49, 0.95)",
-            },
-            "&.Mui-disabled": {
-              opacity: 0.3,
-              color: "text.secondary",
             },
           }}
         >

@@ -104,11 +104,11 @@
           card.href = `/project.html?id=${encodeURIComponent(project.id)}&category=${encodeURIComponent(categoryName)}`;
           card.className = 'project-card fade-in';
 
-          // Get thumbnail or first image
-          const thumbnail = project.thumbnail || (project.images.length > 0 ? project.images[0].path : '');
+          // Get thumbnail (already includes path prefix from data.json)
+          const thumbnail = project.thumbnail || (project.images.length > 0 ? project.images[0].url : '');
 
           card.innerHTML = `
-            ${thumbnail ? `<img src="/${thumbnail}" alt="${project.title}" class="project-thumbnail" loading="lazy">` : '<div class="project-thumbnail" style="background: var(--color-bg);"></div>'}
+            ${thumbnail ? `<img src="${thumbnail}" alt="${project.title}" class="project-thumbnail" loading="lazy">` : '<div class="project-thumbnail" style="background: var(--color-bg);"></div>'}
             <div class="project-info">
               <h3>${project.title}</h3>
               <p>${project.description}</p>

@@ -1,8 +1,6 @@
 import { glob } from 'glob';
 import path from 'path';
 import fs from 'fs/promises';
-import { createWriteStream } from 'fs';
-import archiver from 'archiver';
 
 const PORTFOLIO_DIR = 'portfolio';
 const RELEASES_DIR = 'releases';
@@ -13,56 +11,109 @@ async function prepareRelease() {
   // Create releases directory
   await fs.mkdir(RELEASES_DIR, { recursive: true });
 
-  // Get all categories
-  const categories = await glob(`${PORTFOLIO_DIR}/*/`, { });
+  // Suggested release version (today's date)
+  const releaseVersion = `v${new Date().toISOString().split('T')[0].replace(/-/g, '')}`;
 
   const releaseInfo = {
-    version: new Date().toISOString().split('T')[0].replace(/-/g, ''),
-    archives: []
+    version: releaseVersion,
+    files: [],
+    projects: []
   };
 
-  for (const categoryPath of categories) {
-    const category = path.basename(categoryPath);
+  // Get all projects
+  const metadataFiles = await glob(`${PORTFOLIO_DIR}/*/*/metadata.json`);
 
-    console.log(`\n📂 Processing category: ${category}`);
+  console.log(`Found ${metadataFiles.length} projects\n`);
 
-    // Get all projects in category
-    const projects = await glob(`${categoryPath}/*/`, { });
+  for (const metadataPath of metadataFiles) {
+    try {
+      // Read metadata
+      const content = await fs.readFile(metadataPath, 'utf-8');
+      const metadata = JSON.parse(content);
 
-    for (const projectPath of projects) {
-      const projectName = path.basename(projectPath);
+      // Extract category and project path
+      const parts = metadataPath.split(path.sep);
+      const category = parts[1];
+      const projectFolder = parts[2];
 
-      // Find all original images (PNG/JPG)
-      const images = await glob(`${projectPath}/images/*.{png,jpg,jpeg}`, { nodir: true });
+      console.log(`\n📂 Processing: ${category}/${projectFolder}`);
+
+      // Find all original images (not WebP, not thumbnails)
+      const imagePatterns = [
+        `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/*.png`,
+        `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/*.jpg`,
+        `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/*.jpeg`
+      ];
+
+      let images = [];
+      for (const pattern of imagePatterns) {
+        const found = await glob(pattern);
+        images.push(...found);
+      }
 
       if (images.length === 0) {
-        console.log(`  ⚠ No images in ${category}/${projectName}`);
+        console.log(`  ⚠ No images found`);
         continue;
       }
 
-      // Create zip archive for this project
-      const archiveName = `${category}_${projectName}.zip`;
-      const archivePath = path.join(RELEASES_DIR, archiveName);
+      const projectFiles = [];
 
-      await createZip(images, archivePath, projectPath);
+      // Copy each image with release naming convention
+      for (const imagePath of images) {
+        const ext = path.extname(imagePath);
+        const basename = path.basename(imagePath, ext);
 
-      // Get archive size
-      const stats = await fs.stat(archivePath);
-      const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
+        // Release filename: CATEGORY_PROJECT_originalname.ext
+        const releaseFilename = `${category}_${projectFolder}_${basename}${ext}`;
+        const releasePath = path.join(RELEASES_DIR, releaseFilename);
 
-      console.log(`  ✓ Created ${archiveName} (${sizeMB} MB)`);
+        // Copy file
+        await fs.copyFile(imagePath, releasePath);
 
-      releaseInfo.archives.push({
+        const stats = await fs.stat(releasePath);
+        const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
+
+        console.log(`  ✓ ${releaseFilename} (${sizeMB} MB)`);
+
+        projectFiles.push({
+          original: path.basename(imagePath),
+          release: releaseFilename,
+          sizeMB: parseFloat(sizeMB)
+        });
+
+        releaseInfo.files.push({
+          filename: releaseFilename,
+          project: `${category}/${projectFolder}`,
+          sizeMB: parseFloat(sizeMB)
+        });
+      }
+
+      // Track project info
+      releaseInfo.projects.push({
         category,
-        project: projectName,
-        archive: archiveName,
+        name: projectFolder,
+        title: metadata.title,
         imageCount: images.length,
-        sizeMB: parseFloat(sizeMB)
+        files: projectFiles,
+        totalSizeMB: projectFiles.reduce((sum, f) => sum + f.sizeMB, 0).toFixed(2)
       });
+
+    } catch (error) {
+      console.error(`✗ Error processing ${metadataPath}:`, error.message);
     }
   }
 
-  // Write release info
+  // Calculate totals
+  const totalFiles = releaseInfo.files.length;
+  const totalSizeMB = releaseInfo.files.reduce((sum, f) => sum + f.sizeMB, 0).toFixed(2);
+
+  releaseInfo.summary = {
+    totalProjects: releaseInfo.projects.length,
+    totalFiles,
+    totalSizeMB: parseFloat(totalSizeMB)
+  };
+
+  // Write release info JSON
   await fs.writeFile(
     path.join(RELEASES_DIR, 'release-info.json'),
     JSON.stringify(releaseInfo, null, 2)
@@ -75,106 +126,238 @@ async function prepareRelease() {
     instructions
   );
 
+  // Generate metadata update instructions
+  const metadataInstructions = generateMetadataInstructions(releaseInfo);
+  await fs.writeFile(
+    path.join(RELEASES_DIR, 'UPDATE_METADATA.md'),
+    metadataInstructions
+  );
+
   console.log(`\n✨ Release preparation complete!`);
-  console.log(`   Archives created: ${releaseInfo.archives.length}`);
-  console.log(`   Total size: ${releaseInfo.archives.reduce((sum, a) => sum + a.sizeMB, 0).toFixed(2)} MB`);
-  console.log(`\n📖 See releases/UPLOAD_INSTRUCTIONS.md for next steps`);
-}
-
-async function createZip(files, outputPath, basePath) {
-  return new Promise((resolve, reject) => {
-    const output = createWriteStream(outputPath);
-    const archive = archiver('zip', { zlib: { level: 9 } });
-
-    output.on('close', resolve);
-    archive.on('error', reject);
-
-    archive.pipe(output);
-
-    // Add files to archive
-    for (const file of files) {
-      const relativePath = path.relative(basePath, file);
-      archive.file(file, { name: relativePath });
-    }
-
-    archive.finalize();
-  });
+  console.log(`   Version: ${releaseVersion}`);
+  console.log(`   Projects: ${releaseInfo.projects.length}`);
+  console.log(`   Files: ${totalFiles}`);
+  console.log(`   Total size: ${totalSizeMB} MB`);
+  console.log(`\n📁 All files are in the releases/ folder`);
+  console.log(`📖 See releases/UPLOAD_INSTRUCTIONS.md for next steps`);
 }
 
 function generateInstructions(releaseInfo) {
-  return `# GitHub Releases Upload Instructions
+  return `# GitHub Release Upload Instructions
 
-## Overview
+## Release Information
 
-This release contains ${releaseInfo.archives.length} image archives for your portfolio projects.
-
-**Release Version:** v${releaseInfo.version}
-
-## Upload Steps
-
-### Option 1: GitHub Web UI (Recommended for non-technical users)
-
-1. Go to your repository on GitHub: https://github.com/Confucii/portfolio_yarik
-
-2. Click on "Releases" (right sidebar)
-
-3. Click "Draft a new release"
-
-4. Fill in the release form:
-   - **Tag version:** \`v${releaseInfo.version}\`
-   - **Release title:** Portfolio Images v${releaseInfo.version}
-   - **Description:**
-     \`\`\`
-     Portfolio project images
-     - ${releaseInfo.archives.length} projects
-     - ${releaseInfo.archives.reduce((sum, a) => sum + a.sizeMB, 0).toFixed(2)} MB total
-     \`\`\`
-
-5. Drag and drop ALL zip files from the \`releases/\` folder into the "Attach binaries" section
-
-6. Click "Publish release"
-
-7. Done! ✓
-
-### Option 2: GitHub CLI (For technical users)
-
-\`\`\`bash
-# Create release
-gh release create v${releaseInfo.version} \\
-  --title "Portfolio Images v${releaseInfo.version}" \\
-  --notes "Portfolio project images" \\
-  releases/*.zip
-\`\`\`
-
-## Archives in this release
-
-${releaseInfo.archives.map(a =>
-  `- **${a.archive}** - ${a.project} (${a.imageCount} images, ${a.sizeMB} MB)`
-).join('\n')}
-
-## After Upload
-
-Once uploaded, images will be available at:
-\`\`\`
-https://github.com/Confucii/portfolio_yarik/releases/download/v${releaseInfo.version}/[archive-name].zip
-\`\`\`
-
-Your website will automatically fetch images from these URLs!
+**Version:** \`${releaseInfo.version}\`
+**Projects:** ${releaseInfo.summary.totalProjects}
+**Files:** ${releaseInfo.summary.totalFiles}
+**Total Size:** ${releaseInfo.summary.totalSizeMB} MB
 
 ---
 
-**Need help?** See the main README.md for more information.
+## Upload Methods
+
+### Option 1: GitHub Web UI (Recommended)
+
+1. **Go to your repository:**
+   - Navigate to https://github.com/Confucii/portfolio_yarik
+
+2. **Create a new release:**
+   - Click "Releases" (right sidebar)
+   - Click "Draft a new release"
+
+3. **Configure the release:**
+   - **Tag version:** \`${releaseInfo.version}\`
+   - **Release title:** Portfolio Images ${releaseInfo.version}
+   - **Description:**
+     \`\`\`
+     Portfolio project images - ${releaseInfo.summary.totalProjects} projects
+     Total: ${releaseInfo.summary.totalFiles} images (${releaseInfo.summary.totalSizeMB} MB)
+
+     ## Projects included:
+${releaseInfo.projects.map(p => `     - ${p.category}/${p.name}: ${p.imageCount} images (${p.totalSizeMB} MB)`).join('\n')}
+     \`\`\`
+
+4. **Upload files:**
+   - Click "Attach binaries by dropping them here or selecting them"
+   - Select ALL files from the \`releases/\` folder
+   - **Important:** Upload all ${releaseInfo.summary.totalFiles} files at once
+   - Wait for upload to complete (may take several minutes)
+
+5. **Publish:**
+   - Click "Publish release"
+   - Done! ✓
+
+### Option 2: GitHub CLI (For Technical Users)
+
+\`\`\`bash
+# Create release and upload all files
+gh release create ${releaseInfo.version} \\
+  --title "Portfolio Images ${releaseInfo.version}" \\
+  --notes "Portfolio images for ${releaseInfo.summary.totalProjects} projects" \\
+  releases/*.{png,jpg,jpeg}
+
+# Verify upload
+gh release view ${releaseInfo.version}
+\`\`\`
+
+---
+
+## Files to Upload
+
+Total: ${releaseInfo.summary.totalFiles} files
+
+${releaseInfo.projects.map(p => `
+### ${p.category} - ${p.title}
+
+Files (${p.imageCount} images, ${p.totalSizeMB} MB):
+${p.files.map(f => `- \`${f.release}\` (${f.sizeMB} MB)`).join('\n')}
+`).join('\n')}
+
+---
+
+## After Upload - Update Metadata
+
+**IMPORTANT:** After uploading to releases, you need to update your project metadata files.
+
+See \`UPDATE_METADATA.md\` for detailed instructions on updating each project's \`metadata.json\` file.
+
+Quick summary: Add these fields to each metadata.json:
+\`\`\`json
+{
+  "title": "Your Project",
+  "description": "...",
+  "category": "3D",
+  "releaseVersion": "${releaseInfo.version}",
+  "images": ["image1.png", "image2.png", ...]
+}
+\`\`\`
+
+---
+
+## Verification
+
+After publishing the release, verify your files are accessible:
+
+\`\`\`
+https://github.com/Confucii/portfolio_yarik/releases/download/${releaseInfo.version}/[FILENAME]
+\`\`\`
+
+Example:
+\`\`\`
+https://github.com/Confucii/portfolio_yarik/releases/download/${releaseInfo.version}/${releaseInfo.files[0]?.filename || 'FILENAME'}
+\`\`\`
+
+---
+
+## Troubleshooting
+
+### Upload fails
+- Files too large? Try uploading in smaller batches
+- Network timeout? Try again or use GitHub CLI
+
+### Files not showing
+- Wait a few minutes for GitHub to process
+- Check you used the exact tag: \`${releaseInfo.version}\`
+
+### Wrong files uploaded
+- Delete the release and start over
+- Or create a new release with a new version number
+
+---
+
+**Need help?** See the main README.md or open an issue.
 `;
 }
 
-// Check if archiver is available, if not provide helpful error
-try {
-  await import('archiver');
-  prepareRelease().catch(console.error);
-} catch (error) {
-  console.error('❌ Error: archiver package not found');
-  console.log('\n📦 Please install archiver:');
-  console.log('   npm install --save-dev archiver');
-  console.log('\nThen run this script again.');
-  process.exit(1);
+function generateMetadataInstructions(releaseInfo) {
+  return `# Update Metadata Files for GitHub Releases
+
+After uploading images to GitHub Releases, you need to update each project's \`metadata.json\` file to point to the release.
+
+## Quick Reference
+
+**Release Version:** \`${releaseInfo.version}\`
+
+---
+
+## Projects to Update
+
+${releaseInfo.projects.map(p => `
+### ${p.category}/${p.name}
+
+**File:** \`portfolio/${p.category}/${p.name}/metadata.json\`
+
+**Add these fields:**
+\`\`\`json
+{
+  "title": "${p.title}",
+  "description": "...",
+  "category": "${p.category}",
+  "releaseVersion": "${releaseInfo.version}",
+  "images": [
+${p.files.map(f => `    "${f.original}"`).join(',\n')}
+  ]
 }
+\`\`\`
+
+**How to update:**
+1. Open \`portfolio/${p.category}/${p.name}/metadata.json\`
+2. Add the \`releaseVersion\` field: \`"${releaseInfo.version}"\`
+3. Add the \`images\` array with the filenames above
+4. Save the file
+5. Commit and push to your repository
+`).join('\n')}
+
+---
+
+## Automated Update (Alternative)
+
+If you want to update all metadata files at once, you can use this script:
+
+\`\`\`bash
+# Run this in your terminal
+npm run update-metadata-releases -- ${releaseInfo.version}
+\`\`\`
+
+This will automatically update all metadata.json files with the release version.
+
+---
+
+## After Updating
+
+1. **Commit changes:**
+   \`\`\`bash
+   git add portfolio/
+   git commit -m "Update metadata to use GitHub Releases ${releaseInfo.version}"
+   git push
+   \`\`\`
+
+2. **Rebuild site:**
+   \`\`\`bash
+   npm run generate-data
+   npm run build
+   \`\`\`
+
+3. **Deploy:**
+   - Push to main branch
+   - GitHub Actions will auto-deploy
+
+Your portfolio will now load images from GitHub Releases!
+
+---
+
+## Verification
+
+After deploying, check that:
+- Thumbnails load (from repo)
+- Full images load when clicking projects (from releases)
+- Browser console shows no 404 errors
+
+Test URL format:
+\`\`\`
+https://github.com/Confucii/portfolio_yarik/releases/download/${releaseInfo.version}/[CATEGORY]_[PROJECT]_[FILENAME]
+\`\`\`
+`;
+}
+
+prepareRelease().catch(console.error);

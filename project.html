@@ -167,8 +167,8 @@
           return;
         }
 
-        // Store images for lightbox
-        currentImages = project.images.map(img => `/${img.path}`);
+        // Store images for lightbox (use URL directly - could be repo or release)
+        currentImages = project.images.map(img => img.url);
 
         // Clear loading message
         galleryGrid.innerHTML = '';
@@ -177,7 +177,7 @@
         project.images.forEach((image, index) => {
           const item = document.createElement('div');
           item.className = 'gallery-item fade-in';
-          item.innerHTML = `<img src="/${image.path}" alt="${project.title} - Image ${index + 1}" loading="lazy">`;
+          item.innerHTML = `<img src="${image.url}" alt="${project.title} - Image ${index + 1}" loading="lazy">`;
 
           // Handle image loading
           const img = item.querySelector('img');

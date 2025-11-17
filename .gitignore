@@ -33,3 +33,6 @@ portfolio/**/images/*.webp
 
 # Generated data
 data.json
+
+# Release files (prepared for GitHub Releases upload)
+releases/

@@ -70,6 +70,42 @@ async function generateData() {
         }
       }
 
+      // Determine image source strategy
+      const releaseVersion = metadata.releaseVersion || null;
+      const useReleases = releaseVersion !== null;
+
+      // Build image URLs
+      let imageList = [];
+
+      if (useReleases) {
+        // Images hosted on GitHub Releases
+        // Expected URL pattern: https://github.com/USER/REPO/releases/download/VERSION/CATEGORY_PROJECT_filename.ext
+        const baseReleaseUrl = `https://github.com/${GITHUB_REPO}/releases/download/${releaseVersion}`;
+
+        // Read image list from metadata if provided, otherwise use found images
+        const imageFiles = metadata.images || images.map(img => path.basename(img));
+
+        imageList = imageFiles.map(filename => {
+          // If it's already a full path, extract just the filename
+          const fname = typeof filename === 'string' ? filename : filename.name || filename;
+          const basename = path.basename(fname);
+          const releaseFilename = `${category}_${projectFolder}_${basename}`;
+
+          return {
+            name: basename,
+            url: `${baseReleaseUrl}/${releaseFilename}`,
+            source: 'release'
+          };
+        });
+      } else {
+        // Images in repository (development/fallback mode)
+        imageList = images.map(img => ({
+          name: path.basename(img),
+          url: `/portfolio_yarik/${img}`,
+          source: 'repo'
+        }));
+      }
+
       // Build project object
       const project = {
         id: projectFolder,
@@ -77,14 +113,11 @@ async function generateData() {
         description: metadata.description || '',
         category: category,
         path: `${PORTFOLIO_DIR}/${category}/${projectFolder}`,
-        thumbnail: thumbnail || (images.length > 0 ? images[0] : null),
-        images: images.map(img => ({
-          path: img,
-          // For GitHub Releases: use placeholder that will be replaced
-          url: `/portfolio_yarik/${img}`
-        })),
-        // Support for GitHub Releases URLs (can be updated later)
-        releaseVersion: metadata.releaseVersion || null
+        // Thumbnail always from repo (small, optimized)
+        thumbnail: thumbnail ? `/portfolio_yarik/${thumbnail}` : null,
+        images: imageList,
+        releaseVersion: releaseVersion,
+        imageSource: useReleases ? 'release' : 'repo'
       };
 
       projects.push(project);

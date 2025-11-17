@@ -215,7 +215,7 @@ function ProjectPage() {
             <Close />
           </IconButton>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '70vh' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: { xs: '50vh', sm: '70vh' } }}>
             <IconButton
               onClick={handlePrevious}
               sx={{
@@ -233,7 +233,7 @@ function ProjectPage() {
               alt={`${project.title} - Image ${lightboxIndex + 1}`}
               sx={{
                 maxWidth: '100%',
-                maxHeight: '80vh',
+                maxHeight: { xs: '60vh', sm: '80vh' },
                 objectFit: 'contain',
               }}
             />

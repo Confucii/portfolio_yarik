@@ -15,6 +15,11 @@ function ProjectThumbnail({ project }) {
         aspectRatio: '1 / 1', // Creates a 1:1 aspect ratio
         textDecoration: 'none',
         cursor: 'pointer',
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-5px)',
+          boxShadow: '0 10px 30px rgba(224, 145, 204, 0.3)',
+        },
       }}
     >
       {/* Static thumbnail image */}
@@ -26,6 +31,7 @@ function ProjectThumbnail({ project }) {
           width: '100%',
           height: '100%',
           objectFit: 'cover',
+          borderRadius: 1, // Match Card's borderRadius to keep corners rounded
         }}
         loading="lazy"
       />

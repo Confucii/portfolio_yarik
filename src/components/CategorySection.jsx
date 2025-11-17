@@ -78,7 +78,7 @@ function CategorySection({ category, projects }) {
               display: "flex",
               gap: "24px",
               px: "24px", // half gap on sides for first/last slide
-              py: "12px",
+              py: "40px", // Extra padding for hover shadow visibility
             }}
           >
             {projects.map((project) => (

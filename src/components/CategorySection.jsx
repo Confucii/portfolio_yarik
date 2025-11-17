@@ -54,26 +54,31 @@ function CategorySection({ category, projects }) {
             width: "100%",
             pb: 2,
             mb: 3,
-            pl: 2,
-            pr: 2,
           }}
         >
           <Box
             sx={{
               display: "flex",
-              columnGap: 3, // keeps gaps between real items
-              paddingRight: 3, // adds the missing gap at the end
-              paddingLeft: 3, // adds the missing gap at the start
+              gap: 3, // 24px gap between items
+              pl: "20px", // matches outer container padding
+              pr: "20px", // matches outer container padding
             }}
           >
-            {projects.map((project, i) => (
+            {projects.map((project) => (
               <Box
                 key={project.id}
                 sx={{
-                  flex: "0 0 calc(100% / 4)", // 4 items desktop
-                  "@media(max-width:1280px)": { flex: "0 0 calc(100% / 3)" },
-                  "@media(max-width:960px)": { flex: "0 0 calc(100% / 2)" },
-                  "@media(max-width:600px)": { flex: "0 0 100%" },
+                  flex: "0 0 calc((100% - 72px) / 4)", // (100% - (3 gaps * 24px)) / 4 items
+                  minWidth: 0,
+                  "@media(max-width:1280px)": {
+                    flex: "0 0 calc((100% - 48px) / 3)" // (100% - (2 gaps * 24px)) / 3 items
+                  },
+                  "@media(max-width:960px)": {
+                    flex: "0 0 calc((100% - 24px) / 2)" // (100% - (1 gap * 24px)) / 2 items
+                  },
+                  "@media(max-width:600px)": {
+                    flex: "0 0 100%" // Full width, no gaps needed
+                  },
                 }}
               >
                 <ProjectThumbnail project={project} />

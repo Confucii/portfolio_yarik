@@ -3,11 +3,12 @@ import { glob } from 'glob';
 import path from 'path';
 import fs from 'fs/promises';
 
-const THUMBNAIL_SIZE = 400; // Square thumbnails for grid
 const WEBP_QUALITY = 85;
 
 async function optimizeImages() {
-  console.log('🖼️  Starting image optimization...\n');
+  console.log('🖼️  Optimizing images to WebP format...\n');
+  console.log('ℹ️  This is OPTIONAL - run only if you want smaller file sizes for releases.\n');
+  console.log('   Original PNG/JPG files will be preserved.\n');
 
   // Find all PNG/JPG images in portfolio folders
   const imagePatterns = [
@@ -18,16 +19,27 @@ async function optimizeImages() {
 
   let totalProcessed = 0;
   let totalSaved = 0;
+  let totalOriginalSize = 0;
+  let totalWebpSize = 0;
 
   for (const pattern of imagePatterns) {
     const images = await glob(pattern, { nodir: true });
 
     for (const imagePath of images) {
+      // Skip if WebP version already exists
+      const ext = path.extname(imagePath);
+      const basename = path.basename(imagePath, ext);
+      const webpPath = path.join(path.dirname(imagePath), `${basename}.webp`);
+
       try {
-        const dir = path.dirname(imagePath);
-        const ext = path.extname(imagePath);
-        const basename = path.basename(imagePath, ext);
-        const webpPath = path.join(dir, `${basename}.webp`);
+        // Check if WebP already exists
+        try {
+          await fs.access(webpPath);
+          console.log(`⏭  Skipping ${imagePath} (WebP exists)`);
+          continue;
+        } catch {
+          // WebP doesn't exist, proceed with conversion
+        }
 
         // Get original size
         const originalStats = await fs.stat(imagePath);
@@ -48,48 +60,32 @@ async function optimizeImages() {
 
         totalProcessed++;
         totalSaved += saved;
+        totalOriginalSize += originalSize;
+        totalWebpSize += webpSize;
       } catch (error) {
         console.error(`✗ Error processing ${imagePath}:`, error.message);
       }
     }
   }
 
-  // Generate thumbnails from first image in each project
-  console.log('\n📸 Generating project thumbnails...\n');
-
-  const projectDirs = await glob('portfolio/*/*/', { });
-
-  for (const projectDir of projectDirs) {
-    try {
-      // Find first image in project
-      const images = await glob(`${projectDir}/images/*.{png,jpg,jpeg}`, { nodir: true });
-
-      if (images.length === 0) {
-        console.log(`⚠ No images found in ${projectDir}`);
-        continue;
-      }
-
-      const firstImage = images[0];
-      const thumbnailPath = path.join(projectDir, 'thumbnail.webp');
-
-      // Create square thumbnail
-      await sharp(firstImage)
-        .resize(THUMBNAIL_SIZE, THUMBNAIL_SIZE, {
-          fit: 'cover',
-          position: 'center'
-        })
-        .webp({ quality: 90 })
-        .toFile(thumbnailPath);
-
-      console.log(`✓ Created thumbnail: ${thumbnailPath}`);
-    } catch (error) {
-      console.error(`✗ Error creating thumbnail for ${projectDir}:`, error.message);
-    }
+  if (totalProcessed === 0) {
+    console.log('\n⚠️  No images to optimize (all WebP versions already exist)');
+    console.log('   Delete .webp files if you want to regenerate them.\n');
+    return;
   }
 
   console.log(`\n✨ Optimization complete!`);
-  console.log(`   Processed: ${totalProcessed} images`);
-  console.log(`   Total saved: ${formatBytes(totalSaved)}`);
+  console.log(`   Images processed: ${totalProcessed}`);
+  console.log(`   Original size: ${formatBytes(totalOriginalSize)}`);
+  console.log(`   WebP size: ${formatBytes(totalWebpSize)}`);
+  console.log(`   Total saved: ${formatBytes(totalSaved)} (${((totalSaved / totalOriginalSize) * 100).toFixed(1)}%)\n`);
+  console.log('💡 Next steps:');
+  console.log('   1. Review the .webp files to ensure quality is acceptable');
+  console.log('   2. Decide which format to upload to GitHub Releases:');
+  console.log('      - Upload WebP files (smaller, faster loading)');
+  console.log('      - Upload original PNG/JPG files (maximum quality)');
+  console.log('      - Upload both (users get WebP, fallback to original)\n');
+  console.log('   3. Run: npm run prepare-release');
 }
 
 function formatBytes(bytes) {

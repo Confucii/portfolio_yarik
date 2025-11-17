@@ -27,12 +27,11 @@ Thumbs.db
 *.tmp
 *.log
 
-# Optimized images (generated)
-portfolio/**/thumbnail.webp
-portfolio/**/images/*.webp
-
 # Generated data
 data.json
 
 # Release files (prepared for GitHub Releases upload)
 releases/
+
+# All images in portfolio (hosted on GitHub Releases)
+portfolio/**/images/

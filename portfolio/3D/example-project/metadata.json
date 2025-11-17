@@ -1,5 +1,9 @@
 {
   "title": "Example 3D Project",
-  "description": "This is an example project. Replace this folder with your own projects! Each project should have a metadata.json file and an images/ folder with your work.",
-  "category": "3D"
+  "description": "This is an example project. Replace with your own projects! Only metadata.json is stored in the repo - images are hosted on GitHub Releases.",
+  "category": "3D",
+  "_comment": "After uploading images to GitHub Releases, add:",
+  "_releaseVersion": "v20250117",
+  "_thumbnail": "first_image.png (optional - defaults to first image)",
+  "_images": ["image1.png", "image2.png", "image3.png"]
 }

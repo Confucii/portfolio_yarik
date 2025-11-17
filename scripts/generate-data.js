@@ -52,30 +52,13 @@ async function generateData() {
         return true;
       });
 
-      // Check for thumbnail
-      const thumbnailPatterns = [
-        `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.webp`,
-        `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.jpg`,
-        `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.png`
-      ];
-
-      let thumbnail = null;
-      for (const pattern of thumbnailPatterns) {
-        try {
-          await fs.access(pattern);
-          thumbnail = pattern;
-          break;
-        } catch {
-          continue;
-        }
-      }
-
       // Determine image source strategy
       const releaseVersion = metadata.releaseVersion || null;
       const useReleases = releaseVersion !== null;
 
       // Build image URLs
       let imageList = [];
+      let thumbnailUrl = null;
 
       if (useReleases) {
         // Images hosted on GitHub Releases
@@ -97,6 +80,16 @@ async function generateData() {
             source: 'release'
           };
         });
+
+        // Thumbnail from releases: use specified thumbnail or first image
+        if (metadata.thumbnail) {
+          // User specified a thumbnail filename
+          const thumbnailFilename = `${category}_${projectFolder}_${metadata.thumbnail}`;
+          thumbnailUrl = `${baseReleaseUrl}/${thumbnailFilename}`;
+        } else if (imageList.length > 0) {
+          // Use first image as thumbnail
+          thumbnailUrl = imageList[0].url;
+        }
       } else {
         // Images in repository (development/fallback mode)
         imageList = images.map(img => ({
@@ -104,6 +97,28 @@ async function generateData() {
           url: `/portfolio_yarik/${img}`,
           source: 'repo'
         }));
+
+        // Check for local thumbnail
+        const thumbnailPatterns = [
+          `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.webp`,
+          `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.jpg`,
+          `${PORTFOLIO_DIR}/${category}/${projectFolder}/thumbnail.png`
+        ];
+
+        for (const pattern of thumbnailPatterns) {
+          try {
+            await fs.access(pattern);
+            thumbnailUrl = `/portfolio_yarik/${pattern}`;
+            break;
+          } catch {
+            continue;
+          }
+        }
+
+        // Fallback to first image if no thumbnail found
+        if (!thumbnailUrl && imageList.length > 0) {
+          thumbnailUrl = imageList[0].url;
+        }
       }
 
       // Build project object
@@ -113,8 +128,8 @@ async function generateData() {
         description: metadata.description || '',
         category: category,
         path: `${PORTFOLIO_DIR}/${category}/${projectFolder}`,
-        // Thumbnail always from repo (small, optimized)
-        thumbnail: thumbnail ? `/portfolio_yarik/${thumbnail}` : null,
+        // Thumbnail from releases or repo
+        thumbnail: thumbnailUrl,
         images: imageList,
         releaseVersion: releaseVersion,
         imageSource: useReleases ? 'release' : 'repo'

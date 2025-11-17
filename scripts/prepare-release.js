@@ -38,11 +38,12 @@ async function prepareRelease() {
 
       console.log(`\n📂 Processing: ${category}/${projectFolder}`);
 
-      // Find all original images (not WebP, not thumbnails)
+      // Find all images (PNG/JPG and optionally WebP if optimized)
       const imagePatterns = [
         `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/*.png`,
         `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/*.jpg`,
-        `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/*.jpeg`
+        `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/*.jpeg`,
+        `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/*.webp`
       ];
 
       let images = [];

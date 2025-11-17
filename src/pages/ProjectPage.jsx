@@ -93,7 +93,7 @@ function ProjectPage() {
       <Container sx={{ py: 8 }}>
         <Alert severity="error">Project not found</Alert>
         <Button component={Link} to={`/category/${categoryName}`} startIcon={<ArrowBack />} sx={{ mt: 2 }}>
-          Back to Category
+          To Category
         </Button>
       </Container>
     );
@@ -105,7 +105,7 @@ function ProjectPage() {
       <Box sx={{ backgroundColor: 'secondary.main', py: { xs: 4, md: 6 } }}>
         <Container>
           <Button component={Link} to={`/category/${categoryName}`} startIcon={<ArrowBack />} sx={{ mb: 2 }}>
-            Back to {category?.displayName || categoryName}
+            To {category?.displayName || categoryName}
           </Button>
           <Typography variant="h2" gutterBottom>
             {project.title}

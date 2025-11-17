@@ -114,7 +114,7 @@ function CategoryPage() {
       <Container sx={{ py: 8 }}>
         <Alert severity="error">Category not found</Alert>
         <Button component={Link} to="/" startIcon={<ArrowBack />} sx={{ mt: 2 }}>
-          Back to Home
+          To Home
         </Button>
       </Container>
     );
@@ -126,7 +126,7 @@ function CategoryPage() {
       <Box sx={{ backgroundColor: 'secondary.main', py: { xs: 4, md: 6 } }}>
         <Container>
           <Button component={Link} to="/" startIcon={<ArrowBack />} sx={{ mb: 2 }}>
-            Back to Home
+            To Home
           </Button>
           <Typography variant="h2" gutterBottom>
             {category.displayName}

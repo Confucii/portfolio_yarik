@@ -105,9 +105,6 @@ function CategoryCard({ category, projects }) {
           <Typography variant="h5" gutterBottom>
             {category.displayName}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {category.projectCount} {category.projectCount === 1 ? 'project' : 'projects'}
-          </Typography>
         </Box>
 
         {/* See More Button */}

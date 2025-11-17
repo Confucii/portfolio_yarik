@@ -78,9 +78,6 @@ function CategoryPage() {
           <Typography variant="h2" gutterBottom>
             {category.displayName}
           </Typography>
-          <Typography variant="h6" color="text.secondary">
-            {category.projectCount} {category.projectCount === 1 ? 'project' : 'projects'}
-          </Typography>
         </Container>
       </Box>
 

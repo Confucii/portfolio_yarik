@@ -6,6 +6,7 @@ import ProjectThumbnail from "./ProjectThumbnail";
 
 function CategorySection({ category, projects }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   // Calculate items per view based on screen size
   const getItemsPerView = () => {
@@ -25,32 +26,65 @@ function CategorySection({ category, projects }) {
 
     const handleResize = () => {
       setItemsPerView(getItemsPerView());
-      setCurrentIndex(0); // Reset to first slide on resize
+      setCurrentIndex(projects.length); // Reset to first real item
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [projects.length]);
+
+  // Create infinite loop by duplicating projects array
+  // [clone of last items] [original items] [clone of first items]
+  const extendedProjects = [
+    ...projects.slice(-itemsPerView), // Clone last items at start
+    ...projects,                        // Original items
+    ...projects.slice(0, itemsPerView)  // Clone first items at end
+  ];
+
+  // Initialize to show first real item (after the cloned items)
+  useEffect(() => {
+    setCurrentIndex(projects.length);
+  }, [projects.length]);
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => {
-      if (prev === 0) {
-        // Loop to position where last project is visible
-        return Math.max(0, projects.length - itemsPerView);
-      }
-      return prev - 1;
-    });
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => {
-      // When last project becomes visible, loop back to start
-      if (prev >= projects.length - itemsPerView) {
-        return 0;
-      }
-      return prev + 1;
-    });
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev + 1);
   };
+
+  // Handle infinite loop by resetting position when reaching clones
+  useEffect(() => {
+    if (!isTransitioning) return;
+
+    const timer = setTimeout(() => {
+      // If we're at the end clones, jump to the start of real items
+      if (currentIndex >= projects.length * 2) {
+        setIsTransitioning(false);
+        setCurrentIndex(projects.length);
+      }
+      // If we're at the start clones, jump to the end of real items
+      else if (currentIndex < projects.length) {
+        setIsTransitioning(false);
+        setCurrentIndex(projects.length * 2 - 1);
+      }
+    }, 500); // Match the transition duration
+
+    return () => clearTimeout(timer);
+  }, [currentIndex, projects.length, isTransitioning]);
+
+  // Re-enable transition after instant jump
+  useEffect(() => {
+    if (!isTransitioning) {
+      const timer = setTimeout(() => {
+        setIsTransitioning(true);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isTransitioning]);
 
   // Calculate the transform offset
   const itemWidth = `calc((100% - ${(itemsPerView - 1) * 24}px) / ${itemsPerView})`;
@@ -121,12 +155,12 @@ function CategorySection({ category, projects }) {
               display: "flex",
               gap: 3,
               transform: `translateX(calc(-${currentIndex} * (${itemWidth} + 24px)))`,
-              transition: "transform 0.5s ease-in-out",
+              transition: isTransitioning ? "transform 0.5s ease-in-out" : "none",
             }}
           >
-            {projects.map((project, index) => (
+            {extendedProjects.map((project, index) => (
               <Box
-                key={project.id}
+                key={`${project.id}-${index}`}
                 sx={{
                   flex: `0 0 calc((100% - ${(itemsPerView - 1) * 24}px) / ${itemsPerView})`,
                   minWidth: 0,

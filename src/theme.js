@@ -1,43 +1,43 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
     primary: {
-      main: '#E091CC', // Pink accent color
-      light: '#F0A1DC',
-      dark: '#C080B0',
+      main: "#E091CC", // Pink accent color
+      light: "#F0A1DC",
+      dark: "#C080B0",
     },
     secondary: {
-      main: '#261F31', // Dark purple background
-      light: '#332A3F',
-      dark: '#1A1522',
+      main: "#261F31", // Dark purple background
+      light: "#332A3F",
+      dark: "#1A1522",
     },
     background: {
-      default: '#261F31',
-      paper: '#332A3F',
+      default: "#261F31",
+      paper: "#332A3F",
     },
     text: {
-      primary: '#E091CC',
-      secondary: '#B080A0',
+      primary: "#E091CC",
+      secondary: "#B080A0",
     },
   },
   typography: {
     fontFamily: [
-      'SF Pro Display',
-      '-apple-system',
-      'BlinkMacSystemFont',
+      "SF Pro Display",
+      "-apple-system",
+      "BlinkMacSystemFont",
       '"Segoe UI"',
-      'Roboto',
-      'sans-serif',
-    ].join(','),
+      "Roboto",
+      "sans-serif",
+    ].join(","),
     h1: {
       fontWeight: 700,
-      letterSpacing: '-0.02em',
+      letterSpacing: "-0.02em",
     },
     h2: {
       fontWeight: 600,
-      letterSpacing: '-0.01em',
+      letterSpacing: "-0.01em",
     },
     h3: {
       fontWeight: 600,
@@ -50,10 +50,9 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-          '&:hover': {
-            transform: 'translateY(-5px)',
-            boxShadow: '0 10px 30px rgba(224, 145, 204, 0.3)',
+          transition: "box-shadow 0.3s ease",
+          "&:hover": {
+            boxShadow: "0 10px 30px rgba(224, 145, 204, 0.3)",
           },
         },
       },
@@ -61,7 +60,7 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none',
+          textTransform: "none",
           fontWeight: 600,
         },
       },

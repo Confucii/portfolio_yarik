@@ -78,11 +78,21 @@ function CategorySection({ category, projects }) {
               display: "flex",
               gap: "24px",
               px: "24px", // half gap on sides for first/last slide
-              py: "12px",
+              py: "40px", // Extra padding for hover shadow visibility
             }}
           >
             {projects.map((project) => (
-              <Box key={project.id} sx={{ flex: `0 0 ${slideWidth}px` }}>
+              <Box
+                key={project.id}
+                sx={{
+                  flex: `0 0 ${slideWidth}px`,
+                  transition: "box-shadow 0.3s ease",
+                  borderRadius: 2,
+                  "&:hover": {
+                    boxShadow: "0 10px 30px rgba(224, 145, 204, 0.3)",
+                  },
+                }}
+              >
                 <ProjectThumbnail project={project} />
               </Box>
             ))}

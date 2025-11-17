@@ -40,15 +40,17 @@ function ProjectThumbnail({ project }) {
           right: 0,
           borderRadius: 1,
           background:
-            "linear-gradient(to top, rgba(26, 21, 34, 1), transparent)",
+            "linear-gradient(to top, rgba(26, 21, 34, 0.95) 0%, rgba(26, 21, 34, 0.8) 50%, transparent 100%)",
           color: "primary.main",
           p: 2,
+          paddingTop: 4,
         }}
       >
         <Typography
           sx={{
             fontSize: "1rem",
             fontWeight: 500,
+            textShadow: "0 2px 4px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.6)",
           }}
         >
           {project.title}

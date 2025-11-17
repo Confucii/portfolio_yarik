@@ -204,7 +204,7 @@ function CategoryPage() {
                               image={`${import.meta.env.BASE_URL}${image.url}`}
                               alt={`${project.title} - Image ${index + 1}`}
                               loading="lazy"
-                              sx={{ objectFit: 'cover' }}
+                              sx={{ objectFit: 'contain', backgroundColor: 'background.default' }}
                             />
                           </Card>
                         </Grid>

@@ -38,8 +38,9 @@ function ProjectThumbnail({ project }) {
           bottom: 0,
           left: 0,
           right: 0,
+          borderRadius: 1,
           background:
-            "linear-gradient(to top, rgba(26, 21, 34, 0.9), transparent)",
+            "linear-gradient(to top, rgba(26, 21, 34, 1), transparent)",
           color: "primary.main",
           p: 2,
         }}

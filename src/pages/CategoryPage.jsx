@@ -235,10 +235,6 @@ function CategoryPage() {
                           <Card
                             sx={{
                               cursor: "pointer",
-                              "&:hover": {
-                                transform: "scale(1.05)",
-                                transition: "transform 0.2s",
-                              },
                             }}
                             onClick={() =>
                               handleOpenLightbox(project.id, index)

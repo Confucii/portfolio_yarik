@@ -21,7 +21,7 @@ import YouTubeEmbed from '../components/YouTubeEmbed';
 function ProjectPage() {
   const { categoryName, projectId } = useParams();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

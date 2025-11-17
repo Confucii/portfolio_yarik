@@ -30,6 +30,7 @@ Thumbs.db
 
 # Generated data
 data.json
+public/data.json
 
 # Temporary optimization files (optional - only if you want to exclude WebP versions)
 # portfolio/**/images/*.webp

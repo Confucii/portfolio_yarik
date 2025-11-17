@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs/promises';
 
 const PORTFOLIO_DIR = 'portfolio';
-const OUTPUT_FILE = 'data.json';
+const OUTPUT_FILE = 'public/data.json';
 
 async function generateData() {
   console.log('📊 Scanning portfolio folders...\n');

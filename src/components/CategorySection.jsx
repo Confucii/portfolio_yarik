@@ -10,16 +10,11 @@ function CategorySection({ category, projects }) {
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
           mb: 3,
         }}
       >
         <Typography variant="h3" sx={{ color: "primary.main" }}>
           {category.displayName}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {category.projectCount}{" "}
-          {category.projectCount === 1 ? "project" : "projects"}
         </Typography>
       </Box>
 

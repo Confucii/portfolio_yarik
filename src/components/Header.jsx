@@ -1,8 +1,11 @@
-import { AppBar, Toolbar, Typography, Box, Button } from '@mui/material';
+import { useState } from 'react';
+import { AppBar, Toolbar, Typography, Box, Button, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { Link, useLocation } from 'react-router-dom';
 
 function Header() {
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const categories = [
     { name: '3D', path: '/category/3D' },
@@ -10,6 +13,14 @@ function Header() {
     { name: 'Works You Might Have Seen', path: '/category/works_you_might_have_seen' },
     { name: 'About', path: '/about' },
   ];
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMenuOpen(false);
+  };
 
   return (
     <AppBar
@@ -51,10 +62,11 @@ function Header() {
           />
         </Box>
 
+        {/* Desktop Navigation */}
         <Box
           sx={{
-            display: 'flex',
-            gap: { xs: 1, md: 2 },
+            display: { xs: 'none', md: 'flex' },
+            gap: 2,
             ml: 'auto',
             flexWrap: 'wrap',
             justifyContent: 'flex-end',
@@ -68,9 +80,9 @@ function Header() {
               sx={{
                 color: location.pathname === category.path ? 'primary.main' : 'text.primary',
                 fontWeight: location.pathname === category.path ? 700 : 500,
-                fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
-                px: { xs: 1.5, md: 2.5 },
-                py: { xs: 1, md: 1.25 },
+                fontSize: '1.25rem',
+                px: 2.5,
+                py: 1.25,
                 textTransform: 'none',
                 borderBottom: location.pathname === category.path ? 2 : 0,
                 borderColor: 'primary.main',
@@ -87,7 +99,67 @@ function Header() {
             </Button>
           ))}
         </Box>
+
+        {/* Mobile Menu Button */}
+        <IconButton
+          sx={{
+            display: { xs: 'flex', md: 'none' },
+            ml: 'auto',
+            color: 'text.primary',
+          }}
+          onClick={handleMobileMenuToggle}
+          aria-label="menu"
+        >
+          <MenuIcon sx={{ fontSize: '2rem' }} />
+        </IconButton>
       </Toolbar>
+
+      {/* Mobile Drawer Menu */}
+      <Drawer
+        anchor="right"
+        open={mobileMenuOpen}
+        onClose={handleMobileMenuClose}
+        PaperProps={{
+          sx: {
+            width: 280,
+            backgroundColor: 'background.default',
+          },
+        }}
+      >
+        <List sx={{ pt: 4 }}>
+          {categories.map((category) => (
+            <ListItem key={category.path} disablePadding>
+              <ListItemButton
+                component={Link}
+                to={category.path}
+                onClick={handleMobileMenuClose}
+                selected={location.pathname === category.path}
+                sx={{
+                  py: 2,
+                  px: 3,
+                  '&.Mui-selected': {
+                    backgroundColor: 'rgba(224, 145, 204, 0.12)',
+                    borderLeft: 4,
+                    borderColor: 'primary.main',
+                  },
+                  '&:hover': {
+                    backgroundColor: 'rgba(224, 145, 204, 0.08)',
+                  },
+                }}
+              >
+                <ListItemText
+                  primary={category.name}
+                  primaryTypographyProps={{
+                    fontSize: '1.125rem',
+                    fontWeight: location.pathname === category.path ? 700 : 500,
+                    color: location.pathname === category.path ? 'primary.main' : 'text.primary',
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
     </AppBar>
   );
 }

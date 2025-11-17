@@ -16,7 +16,7 @@ function HomePage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('/portfolio_yarik/data.json')
+    fetch('/data.json')
       .then((res) => {
         if (!res.ok) throw new Error('Failed to load portfolio data');
         return res.json();

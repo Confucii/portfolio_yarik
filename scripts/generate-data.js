@@ -57,7 +57,7 @@ async function generateData() {
       // Build image URLs
       const imageList = images.map(img => ({
         name: path.basename(img),
-        url: `/portfolio_yarik/${img}`,
+        url: `/${img}`,
         path: img
       }));
 
@@ -66,7 +66,7 @@ async function generateData() {
       if (metadata.thumbnail) {
         // User specified thumbnail
         const thumbnailPath = `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/${metadata.thumbnail}`;
-        thumbnailUrl = `/portfolio_yarik/${thumbnailPath}`;
+        thumbnailUrl = `/${thumbnailPath}`;
       } else if (imageList.length > 0) {
         // Use first image as thumbnail
         thumbnailUrl = imageList[0].url;

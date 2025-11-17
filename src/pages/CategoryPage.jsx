@@ -239,7 +239,7 @@ function CategoryPage() {
         fullWidth
         PaperProps={{
           sx: {
-            backgroundColor: 'rgba(26, 21, 34, 0.98)',
+            backgroundColor: 'rgb(26, 21, 34)',
             backgroundImage: 'none',
           },
         }}

@@ -12,6 +12,8 @@ import {
   Button,
   Dialog,
   IconButton,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   ArrowBack,
@@ -20,10 +22,13 @@ import {
   ChevronRight,
 } from "@mui/icons-material";
 import YouTubeEmbed from "../components/YouTubeEmbed";
+import { escapeProjectId, unescapeProjectId } from "../utils/projectId";
 
 function CategoryPage() {
   const { categoryName } = useParams();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,8 +55,8 @@ function CategoryPage() {
   // Scroll to project if hash is present
   useEffect(() => {
     if (location.hash && !loading) {
-      const projectId = location.hash.substring(1); // Remove the '#'
-      const element = document.getElementById(projectId);
+      const escapedProjectId = location.hash.substring(1); // Remove the '#'
+      const element = document.getElementById(escapedProjectId);
       if (element) {
         // Small delay to ensure content is rendered
         setTimeout(() => {
@@ -62,6 +67,9 @@ function CategoryPage() {
   }, [location.hash, loading]);
 
   const handleOpenLightbox = (projectId, index) => {
+    // Don't open lightbox on mobile devices
+    if (isMobile) return;
+
     setLightboxProjectId(projectId);
     setLightboxIndex(index);
     setLightboxOpen(true);
@@ -176,7 +184,7 @@ function CategoryPage() {
           </Box>
         ) : (
           projects.map((project, projectIndex) => (
-            <Box key={project.id} id={project.id}>
+            <Box key={project.id} id={escapeProjectId(project.id)}>
               {/* Divider (same style as HomePage) */}
               <Box
                 sx={{
@@ -234,7 +242,7 @@ function CategoryPage() {
                         <Grid item {...gridSizes} key={index}>
                           <Card
                             sx={{
-                              cursor: "pointer",
+                              cursor: isMobile ? "default" : "pointer",
                             }}
                             onClick={() =>
                               handleOpenLightbox(project.id, index)

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Box, Card, CardMedia, Typography } from "@mui/material";
+import { escapeProjectId } from "../utils/projectId";
 
 function ProjectThumbnail({ project }) {
   // Use the project's thumbnail
@@ -8,7 +9,7 @@ function ProjectThumbnail({ project }) {
   return (
     <Card
       component={Link}
-      to={`/category/${project.category}#${project.id}`}
+      to={`/category/${project.category}#${escapeProjectId(project.id)}`}
       sx={{
         position: "relative",
         width: "100%",
@@ -38,16 +39,19 @@ function ProjectThumbnail({ project }) {
           bottom: 0,
           left: 0,
           right: 0,
+          borderRadius: 1,
           background:
-            "linear-gradient(to top, rgba(26, 21, 34, 0.9), transparent)",
+            "linear-gradient(to top, rgba(26, 21, 34, 0.95) 0%, rgba(26, 21, 34, 0.8) 50%, transparent 100%)",
           color: "primary.main",
           p: 2,
+          paddingTop: 4,
         }}
       >
         <Typography
           sx={{
             fontSize: "1rem",
             fontWeight: 500,
+            textShadow: "0 2px 4px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.6)",
           }}
         >
           {project.title}

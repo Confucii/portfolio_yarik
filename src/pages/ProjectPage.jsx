@@ -12,12 +12,16 @@ import {
   IconButton,
   Card,
   CardMedia,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { ArrowBack, Close, ChevronLeft, ChevronRight } from '@mui/icons-material';
 import YouTubeEmbed from '../components/YouTubeEmbed';
 
 function ProjectPage() {
   const { categoryName, projectId } = useParams();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,6 +45,9 @@ function ProjectPage() {
   }, []);
 
   const handleOpenLightbox = (index) => {
+    // Don't open lightbox on mobile devices
+    if (isMobile) return;
+
     setLightboxIndex(index);
     setLightboxOpen(true);
   };
@@ -146,10 +153,10 @@ function ProjectPage() {
               <Grid item {...gridSizes} key={index}>
                 <Card
                   sx={{
-                    cursor: 'pointer',
+                    cursor: isMobile ? 'default' : 'pointer',
                     height: imageCount <= 4 ? 400 : 200,
                     '&:hover': {
-                      transform: 'scale(1.05)',
+                      transform: isMobile ? 'none' : 'scale(1.05)',
                       transition: 'transform 0.2s',
                     },
                   }}

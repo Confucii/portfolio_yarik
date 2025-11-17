@@ -91,6 +91,9 @@ function CategorySection({ category, projects }) {
   const gapWidth = 24; // 3 * 8px (theme spacing)
   const offset = currentIndex * (100 / itemsPerView + (gapWidth * 100) / (itemsPerView * 100));
 
+  // Check if carousel is needed
+  const needsCarousel = projects.length > itemsPerView;
+
   return (
     <Box sx={{ mb: 8 }}>
       {/* Divider */}
@@ -122,24 +125,26 @@ function CategorySection({ category, projects }) {
           width: "100%",
         }}
       >
-        {/* Left Arrow */}
-        <IconButton
-          onClick={handlePrev}
-          sx={{
-            position: "absolute",
-            left: -20,
-            top: "40%",
-            transform: "translateY(-50%)",
-            zIndex: 2,
-            backgroundColor: "rgba(38, 31, 49, 0.9)",
-            color: "primary.main",
-            "&:hover": {
-              backgroundColor: "rgba(38, 31, 49, 0.95)",
-            },
-          }}
-        >
-          <ChevronLeft sx={{ fontSize: "2rem" }} />
-        </IconButton>
+        {/* Left Arrow - only show if carousel is needed */}
+        {needsCarousel && (
+          <IconButton
+            onClick={handlePrev}
+            sx={{
+              position: "absolute",
+              left: -20,
+              top: "40%",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+              backgroundColor: "rgba(38, 31, 49, 0.9)",
+              color: "primary.main",
+              "&:hover": {
+                backgroundColor: "rgba(38, 31, 49, 0.95)",
+              },
+            }}
+          >
+            <ChevronLeft sx={{ fontSize: "2rem" }} />
+          </IconButton>
+        )}
 
         {/* Projects carousel */}
         <Box
@@ -154,11 +159,13 @@ function CategorySection({ category, projects }) {
             sx={{
               display: "flex",
               gap: 3,
-              transform: `translateX(calc(-${currentIndex} * (${itemWidth} + 24px)))`,
-              transition: isTransitioning ? "transform 0.5s ease-in-out" : "none",
+              transform: needsCarousel
+                ? `translateX(calc(-${currentIndex} * (${itemWidth} + 24px)))`
+                : "none",
+              transition: isTransitioning && needsCarousel ? "transform 0.5s ease-in-out" : "none",
             }}
           >
-            {extendedProjects.map((project, index) => (
+            {(needsCarousel ? extendedProjects : projects).map((project, index) => (
               <Box
                 key={`${project.id}-${index}`}
                 sx={{
@@ -172,24 +179,26 @@ function CategorySection({ category, projects }) {
           </Box>
         </Box>
 
-        {/* Right Arrow */}
-        <IconButton
-          onClick={handleNext}
-          sx={{
-            position: "absolute",
-            right: -20,
-            top: "40%",
-            transform: "translateY(-50%)",
-            zIndex: 2,
-            backgroundColor: "rgba(38, 31, 49, 0.9)",
-            color: "primary.main",
-            "&:hover": {
-              backgroundColor: "rgba(38, 31, 49, 0.95)",
-            },
-          }}
-        >
-          <ChevronRight sx={{ fontSize: "2rem" }} />
-        </IconButton>
+        {/* Right Arrow - only show if carousel is needed */}
+        {needsCarousel && (
+          <IconButton
+            onClick={handleNext}
+            sx={{
+              position: "absolute",
+              right: -20,
+              top: "40%",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+              backgroundColor: "rgba(38, 31, 49, 0.9)",
+              color: "primary.main",
+              "&:hover": {
+                backgroundColor: "rgba(38, 31, 49, 0.95)",
+              },
+            }}
+          >
+            <ChevronRight sx={{ fontSize: "2rem" }} />
+          </IconButton>
+        )}
 
         {/* See More Button */}
         <Box sx={{ display: "flex", justifyContent: "center" }}>

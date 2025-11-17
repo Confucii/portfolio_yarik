@@ -2,7 +2,7 @@ import { glob } from 'glob';
 import path from 'path';
 import fs from 'fs/promises';
 
-const PORTFOLIO_DIR = 'portfolio';
+const PORTFOLIO_DIR = 'public/portfolio';
 const OUTPUT_FILE = 'public/data.json';
 
 async function generateData() {
@@ -24,8 +24,8 @@ async function generateData() {
 
       // Extract category and project path
       const parts = metadataPath.split(path.sep);
-      const category = parts[1]; // portfolio/CATEGORY/project
-      const projectFolder = parts[2];
+      const category = parts[2]; // public/portfolio/CATEGORY/project
+      const projectFolder = parts[3];
 
       // Find all images in project
       const imagePatterns = [
@@ -54,10 +54,10 @@ async function generateData() {
       // Sort images by filename
       images.sort();
 
-      // Build image URLs
+      // Build image URLs (remove 'public/' prefix since it's served from root)
       const imageList = images.map(img => ({
         name: path.basename(img),
-        url: `/${img}`,
+        url: `/${img.replace(/^public\//, '')}`,
         path: img
       }));
 
@@ -66,7 +66,7 @@ async function generateData() {
       if (metadata.thumbnail) {
         // User specified thumbnail
         const thumbnailPath = `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/${metadata.thumbnail}`;
-        thumbnailUrl = `/${thumbnailPath}`;
+        thumbnailUrl = `/${thumbnailPath.replace(/^public\//, '')}`;
       } else if (imageList.length > 0) {
         // Use first image as thumbnail
         thumbnailUrl = imageList[0].url;
@@ -78,7 +78,7 @@ async function generateData() {
         title: metadata.title || projectFolder,
         description: metadata.description || '',
         category: category,
-        path: `${PORTFOLIO_DIR}/${category}/${projectFolder}`,
+        path: `${PORTFOLIO_DIR}/${category}/${projectFolder}`.replace(/^public\//, ''),
         thumbnail: thumbnailUrl,
         images: imageList,
         imageCount: imageList.length,

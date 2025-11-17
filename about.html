@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About Yarik - Portfolio">
+  <title>About - Yarik's Portfolio</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="container">
+      <div class="logo">
+        <img src="/public/logo.svg" alt="Logo" id="logo-img">
+        <span>Portfolio</span>
+      </div>
+      <button class="menu-toggle" aria-label="Toggle menu">☰</button>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about.html" class="active">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="container">
+      <h1>About Me</h1>
+
+      <div class="about-content fade-in">
+        <h2>Welcome!</h2>
+        <p>
+          Hi, I'm Yarik, a creative professional passionate about bringing ideas to life through various mediums.
+          This portfolio showcases my work across different disciplines.
+        </p>
+
+        <h2>What I Do</h2>
+        <p>
+          I work across multiple creative fields, constantly exploring new techniques and pushing the boundaries
+          of what's possible. Each project in my portfolio represents a unique challenge and learning opportunity.
+        </p>
+
+        <h2>My Approach</h2>
+        <p>
+          I believe in the power of continuous learning and experimentation. Every project, from my first 3D render
+          to my latest work, is a step in an ongoing creative journey. I value both technical excellence and
+          artistic expression, striving to balance both in everything I create.
+        </p>
+
+        <h2>Get in Touch</h2>
+        <p>
+          Interested in working together or learning more about my projects? Feel free to reach out!
+        </p>
+
+        <div style="margin-top: var(--spacing-lg);">
+          <a href="/" class="btn">View My Work</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; <span id="year"></span> Yarik. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    // Hide logo if it doesn't exist
+    const logoImg = document.getElementById('logo-img');
+    logoImg.addEventListener('error', () => {
+      logoImg.style.display = 'none';
+    });
+
+    // Set current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

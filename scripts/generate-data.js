@@ -54,10 +54,10 @@ async function generateData() {
       // Sort images by filename
       images.sort();
 
-      // Build image URLs (remove 'public/' prefix since it's served from root)
+      // Build image URLs (remove 'public/' prefix and make relative to vite base)
       const imageList = images.map(img => ({
         name: path.basename(img),
-        url: `/${img.replace(/^public\//, '')}`,
+        url: img.replace(/^public\//, ''),
         path: img
       }));
 
@@ -66,7 +66,7 @@ async function generateData() {
       if (metadata.thumbnail) {
         // User specified thumbnail
         const thumbnailPath = `${PORTFOLIO_DIR}/${category}/${projectFolder}/images/${metadata.thumbnail}`;
-        thumbnailUrl = `/${thumbnailPath.replace(/^public\//, '')}`;
+        thumbnailUrl = thumbnailPath.replace(/^public\//, '');
       } else if (imageList.length > 0) {
         // Use first image as thumbnail
         thumbnailUrl = imageList[0].url;

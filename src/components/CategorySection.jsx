@@ -35,7 +35,8 @@ function CategorySection({ category, projects }) {
   const handlePrev = () => {
     setCurrentIndex((prev) => {
       if (prev === 0) {
-        return projects.length - 1; // Loop to last item
+        // Loop to position where last project is visible
+        return Math.max(0, projects.length - itemsPerView);
       }
       return prev - 1;
     });
@@ -43,8 +44,9 @@ function CategorySection({ category, projects }) {
 
   const handleNext = () => {
     setCurrentIndex((prev) => {
-      if (prev === projects.length - 1) {
-        return 0; // Loop to first item
+      // When last project becomes visible, loop back to start
+      if (prev >= projects.length - itemsPerView) {
+        return 0;
       }
       return prev + 1;
     });

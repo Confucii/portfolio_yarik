@@ -8,14 +8,12 @@ function Footer() {
         py: 3,
         px: 2,
         mt: 'auto',
-        backgroundColor: 'secondary.dark',
-        borderTop: 1,
-        borderColor: 'divider',
+        backgroundColor: 'secondary.main',
       }}
     >
       <Container maxWidth="lg">
         <Typography variant="body2" color="text.secondary" align="center">
-          © {new Date().getFullYear()} Yarik. All rights reserved.
+          © {new Date().getFullYear()} YarVol. All rights reserved.
         </Typography>
       </Container>
     </Box>

@@ -5,9 +5,7 @@ import {
   Box,
   CircularProgress,
   Alert,
-  Button,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
 import CategorySection from '../components/CategorySection';
 
 function HomePage() {
@@ -52,9 +50,9 @@ function HomePage() {
       {/* Hero Section */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #261F31 0%, #1A1522 100%)',
-          py: { xs: 8, md: 12 },
-          textAlign: 'center',
+          backgroundColor: 'secondary.main',
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 4, md: 6 },
         }}
       >
         <Container>
@@ -62,49 +60,20 @@ function HomePage() {
             variant="h1"
             sx={{
               mb: 2,
-              background: 'linear-gradient(135deg, #E091CC 0%, #F0A1DC 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: 'primary.main',
               fontSize: { xs: '2.5rem', md: '4rem' },
             }}
           >
-            Welcome to My Portfolio
+            YarVol
           </Typography>
-          <Typography variant="h5" color="text.secondary" sx={{ maxWidth: 700, mx: 'auto', mb: 4 }}>
-            Explore my creative work across various disciplines
+          <Typography variant="h5" sx={{ maxWidth: 700, color: 'text.primary' }}>
+            Hi, I'm Yaroslav Volikov. Latvian Art Academy jewelry student and independent 3D artist
           </Typography>
-          <Button
-            component={Link}
-            to="/about"
-            variant="outlined"
-            size="large"
-            sx={{
-              borderColor: 'primary.main',
-              color: 'primary.main',
-              fontWeight: 600,
-              px: 4,
-              py: 1.5,
-              '&:hover': {
-                backgroundColor: 'primary.main',
-                color: 'background.paper',
-                borderColor: 'primary.main',
-                transform: 'scale(1.05)',
-              },
-              transition: 'all 0.3s ease',
-            }}
-          >
-            About Me
-          </Button>
         </Container>
       </Box>
 
       {/* Categories Section */}
-      <Container sx={{ py: 8 }}>
-        <Typography variant="h2" align="center" gutterBottom sx={{ mb: 6 }}>
-          Browse by Category
-        </Typography>
-
+      <Container sx={{ pt: 4, pb: 8 }}>
         {/* Render each category as a horizontal section, sorted by project count */}
         {data?.categories
           ?.sort((a, b) => b.projectCount - a.projectCount)

@@ -9,9 +9,9 @@ import AboutPage from './pages/AboutPage';
 
 function App() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'background.default' }}>
       <Header />
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1, backgroundColor: 'background.default' }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/category/:categoryName" element={<CategoryPage />} />

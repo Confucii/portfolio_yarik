@@ -86,6 +86,7 @@ function ProjectPage() {
   }
 
   const project = data?.projects?.find((p) => p.id === projectId && p.category === categoryName);
+  const category = data?.categories?.find((c) => c.name === categoryName);
 
   if (!project) {
     return (
@@ -104,7 +105,7 @@ function ProjectPage() {
       <Box sx={{ backgroundColor: 'secondary.main', py: { xs: 4, md: 6 } }}>
         <Container>
           <Button component={Link} to={`/category/${categoryName}`} startIcon={<ArrowBack />} sx={{ mb: 2 }}>
-            Back to {categoryName}
+            Back to {category?.displayName || categoryName}
           </Button>
           <Typography variant="h2" gutterBottom>
             {project.title}

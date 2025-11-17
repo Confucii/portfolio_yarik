@@ -13,7 +13,7 @@ function Header() {
 
   return (
     <AppBar
-      position="sticky"
+      position="static"
       color="secondary"
       elevation={0}
       sx={{

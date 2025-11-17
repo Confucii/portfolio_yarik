@@ -51,7 +51,7 @@ function CategoryCard({ category, projects }) {
               >
                 <Box
                   component="img"
-                  src={image.url}
+                  src={`${import.meta.env.BASE_URL}${image.url}`}
                   alt={image.projectTitle}
                   sx={{
                     width: '100%',

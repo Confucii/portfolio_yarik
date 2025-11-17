@@ -95,7 +95,7 @@ function CategoryPage() {
                     <CardMedia
                       component="img"
                       height="250"
-                      image={project.thumbnail}
+                      image={`${import.meta.env.BASE_URL}${project.thumbnail}`}
                       alt={project.title}
                       sx={{
                         objectFit: 'cover',

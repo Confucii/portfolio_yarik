@@ -24,9 +24,9 @@ function Header() {
   return (
     <AppBar
       position="static"
-      color="secondary"
       elevation={0}
       sx={{
+        backgroundColor: 'background.default',
         py: { xs: 1, md: 2 },
       }}
     >

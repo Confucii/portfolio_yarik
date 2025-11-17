@@ -3,11 +3,10 @@ import {
   Container,
   Typography,
   Box,
-  Grid,
   CircularProgress,
   Alert,
 } from '@mui/material';
-import CategoryCard from '../components/CategoryCard';
+import CategorySection from '../components/CategorySection';
 
 function HomePage() {
   const [data, setData] = useState(null);
@@ -82,18 +81,19 @@ function HomePage() {
           Browse by Category
         </Typography>
 
-        <Grid container spacing={4}>
-          {data?.categories?.map((category) => {
-            // Get projects for this category
-            const categoryProjects = data.projects.filter(p => p.category === category.name);
+        {/* Render each category as a horizontal section */}
+        {data?.categories?.map((category) => {
+          // Get projects for this category
+          const categoryProjects = data.projects.filter(p => p.category === category.name);
 
-            return (
-              <Grid item xs={12} sm={6} md={4} key={category.name}>
-                <CategoryCard category={category} projects={categoryProjects} />
-              </Grid>
-            );
-          })}
-        </Grid>
+          return (
+            <CategorySection
+              key={category.name}
+              category={category}
+              projects={categoryProjects}
+            />
+          );
+        })}
       </Container>
     </>
   );

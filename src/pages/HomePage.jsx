@@ -51,7 +51,8 @@ function HomePage() {
       <Box
         sx={{
           backgroundColor: 'secondary.main',
-          py: { xs: 8, md: 12 },
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 4, md: 6 },
         }}
       >
         <Container>
@@ -72,7 +73,7 @@ function HomePage() {
       </Box>
 
       {/* Categories Section */}
-      <Container sx={{ py: 8 }}>
+      <Container sx={{ pt: 4, pb: 8 }}>
         {/* Render each category as a horizontal section, sorted by project count */}
         {data?.categories
           ?.sort((a, b) => b.projectCount - a.projectCount)

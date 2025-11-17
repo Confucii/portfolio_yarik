@@ -18,7 +18,7 @@ function Header() {
         >
           <Box
             component="img"
-            src="/portfolio_yarik/logo.svg"
+            src="/logo.svg"
             alt="Logo"
             sx={{
               height: { xs: 32, sm: 40 },

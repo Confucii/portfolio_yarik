@@ -81,19 +81,21 @@ function HomePage() {
           Browse by Category
         </Typography>
 
-        {/* Render each category as a horizontal section */}
-        {data?.categories?.map((category) => {
-          // Get projects for this category
-          const categoryProjects = data.projects.filter(p => p.category === category.name);
+        {/* Render each category as a horizontal section, sorted by project count */}
+        {data?.categories
+          ?.sort((a, b) => b.projectCount - a.projectCount)
+          .map((category) => {
+            // Get projects for this category
+            const categoryProjects = data.projects.filter(p => p.category === category.name);
 
-          return (
-            <CategorySection
-              key={category.name}
-              category={category}
-              projects={categoryProjects}
-            />
-          );
-        })}
+            return (
+              <CategorySection
+                key={category.name}
+                category={category}
+                projects={categoryProjects}
+              />
+            );
+          })}
       </Container>
     </>
   );

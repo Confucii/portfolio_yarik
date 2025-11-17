@@ -6,7 +6,7 @@ function AboutPage() {
   return (
     <Container maxWidth="md" sx={{ py: 8 }}>
       <Button component={Link} to="/" startIcon={<ArrowBack />} sx={{ mb: 4 }}>
-        Back to Home
+        To Home
       </Button>
 
       <Typography variant="h2" gutterBottom>

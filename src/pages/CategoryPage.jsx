@@ -120,7 +120,7 @@ function CategoryPage() {
       </Box>
 
       {/* Projects Content */}
-      <Container sx={{ py: 6 }}>
+      <Container sx={{ pt: 3, pb: 6 }}>
         {projects.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 8 }}>
             <Typography variant="h6" color="text.secondary">
@@ -131,9 +131,7 @@ function CategoryPage() {
           projects.map((project, projectIndex) => (
             <Box key={project.id}>
               {/* Divider (same style as HomePage) */}
-              {projectIndex > 0 && (
-                <Box sx={{ height: 2, backgroundColor: 'primary.main', mb: 6, mt: 8 }} />
-              )}
+              <Box sx={{ height: 2, backgroundColor: 'primary.main', mb: 6, mt: projectIndex === 0 ? 0 : 8 }} />
 
               {/* Project Header */}
               <Box sx={{ mb: 4 }}>

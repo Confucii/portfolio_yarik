@@ -27,8 +27,6 @@ function Header() {
       color="secondary"
       elevation={0}
       sx={{
-        borderBottom: 1,
-        borderColor: 'divider',
         py: { xs: 1, md: 2 },
       }}
     >

@@ -9,8 +9,6 @@ function Footer() {
         px: 2,
         mt: 'auto',
         backgroundColor: 'secondary.main',
-        borderTop: 1,
-        borderColor: 'divider',
       }}
     >
       <Container maxWidth="lg">

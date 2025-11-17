@@ -190,7 +190,6 @@ function CategoryPage() {
                           <Card
                             sx={{
                               cursor: 'pointer',
-                              height: imageCount <= 4 ? 400 : 200,
                               '&:hover': {
                                 transform: 'scale(1.05)',
                                 transition: 'transform 0.2s',
@@ -200,11 +199,15 @@ function CategoryPage() {
                           >
                             <CardMedia
                               component="img"
-                              height="100%"
                               image={`${import.meta.env.BASE_URL}${image.url}`}
                               alt={`${project.title} - Image ${index + 1}`}
                               loading="lazy"
-                              sx={{ objectFit: 'contain', backgroundColor: 'background.default' }}
+                              sx={{
+                                width: '100%',
+                                height: 'auto',
+                                display: 'block',
+                                backgroundColor: 'background.default'
+                              }}
                             />
                           </Card>
                         </Grid>

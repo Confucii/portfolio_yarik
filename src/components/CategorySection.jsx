@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Link } from "react-router-dom";
 import { Box, IconButton, Typography, Button } from "@mui/material";
@@ -10,12 +11,37 @@ function CategorySection({ category, projects }) {
     loop: true,
     align: "start",
     skipSnaps: false,
+    slidesToScroll: 1,
+    containScroll: false,
   });
 
   const scrollPrev = () => embla && embla.scrollPrev();
   const scrollNext = () => embla && embla.scrollNext();
 
-  const needsCarousel = projects.length > 1;
+  // Calculate items per view based on screen size
+  const getItemsPerView = () => {
+    if (typeof window === 'undefined') return 4;
+    const width = window.innerWidth;
+    if (width < 600) return 1; // mobile
+    if (width < 960) return 2; // tablet
+    if (width < 1280) return 3; // small desktop
+    return 4; // large desktop
+  };
+
+  const itemsPerView = getItemsPerView();
+  const needsCarousel = projects.length > itemsPerView;
+
+  // Re-initialize carousel on window resize
+  useEffect(() => {
+    if (!embla) return;
+
+    const handleResize = () => {
+      embla.reInit();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [embla]);
 
   return (
     <Box sx={{ mb: 8 }}>

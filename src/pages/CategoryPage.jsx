@@ -22,6 +22,7 @@ import {
   ChevronRight,
 } from "@mui/icons-material";
 import YouTubeEmbed from "../components/YouTubeEmbed";
+import { escapeProjectId, unescapeProjectId } from "../utils/projectId";
 
 function CategoryPage() {
   const { categoryName } = useParams();
@@ -54,8 +55,8 @@ function CategoryPage() {
   // Scroll to project if hash is present
   useEffect(() => {
     if (location.hash && !loading) {
-      const projectId = location.hash.substring(1); // Remove the '#'
-      const element = document.getElementById(projectId);
+      const escapedProjectId = location.hash.substring(1); // Remove the '#'
+      const element = document.getElementById(escapedProjectId);
       if (element) {
         // Small delay to ensure content is rendered
         setTimeout(() => {
@@ -183,7 +184,7 @@ function CategoryPage() {
           </Box>
         ) : (
           projects.map((project, projectIndex) => (
-            <Box key={project.id} id={project.id}>
+            <Box key={project.id} id={escapeProjectId(project.id)}>
               {/* Divider (same style as HomePage) */}
               <Box
                 sx={{

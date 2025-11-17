@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Box, Card, CardMedia, Typography } from "@mui/material";
+import { escapeProjectId } from "../utils/projectId";
 
 function ProjectThumbnail({ project }) {
   // Use the project's thumbnail
@@ -8,7 +9,7 @@ function ProjectThumbnail({ project }) {
   return (
     <Card
       component={Link}
-      to={`/category/${project.category}#${project.id}`}
+      to={`/category/${project.category}#${escapeProjectId(project.id)}`}
       sx={{
         position: "relative",
         width: "100%",

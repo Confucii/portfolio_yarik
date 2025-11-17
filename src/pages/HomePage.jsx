@@ -50,7 +50,7 @@ function HomePage() {
       {/* Hero Section */}
       <Box
         sx={{
-          backgroundColor: 'primary.main',
+          backgroundColor: 'secondary.main',
           py: { xs: 8, md: 12 },
           textAlign: 'center',
         }}
@@ -60,13 +60,13 @@ function HomePage() {
             variant="h1"
             sx={{
               mb: 2,
-              color: 'secondary.dark',
+              color: 'primary.main',
               fontSize: { xs: '2.5rem', md: '4rem' },
             }}
           >
             Welcome to My Portfolio
           </Typography>
-          <Typography variant="h5" sx={{ maxWidth: 700, mx: 'auto', color: 'secondary.main' }}>
+          <Typography variant="h5" sx={{ maxWidth: 700, mx: 'auto', color: 'text.primary' }}>
             Explore my creative work across various disciplines
           </Typography>
         </Container>

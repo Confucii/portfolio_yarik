@@ -8,7 +8,7 @@ function Footer() {
         py: 3,
         px: 2,
         mt: 'auto',
-        backgroundColor: 'secondary.dark',
+        backgroundColor: 'secondary.main',
         borderTop: 1,
         borderColor: 'divider',
       }}

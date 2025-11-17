@@ -1,5 +1,6 @@
 {
   "title": "Example 3D Project",
-  "description": "This is an example project. Replace this folder with your own projects! Each project should have a metadata.json file and an images/ folder with your work.",
-  "category": "3D"
+  "description": "This is an example project. Replace with your own! Add your images to the images/ folder and commit everything together.",
+  "category": "3D",
+  "thumbnail": "image1.png"
 }

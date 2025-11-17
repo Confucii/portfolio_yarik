@@ -27,9 +27,8 @@ Thumbs.db
 *.tmp
 *.log
 
-# Optimized images (generated)
-portfolio/**/thumbnail.webp
-portfolio/**/images/*.webp
-
 # Generated data
 data.json
+
+# Temporary optimization files (optional - only if you want to exclude WebP versions)
+# portfolio/**/images/*.webp

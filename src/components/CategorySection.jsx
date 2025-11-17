@@ -20,8 +20,9 @@ function CategorySection({ category, projects }) {
     if (containerWidth <= 600) slidesPerView = 1;
     else if (containerWidth <= 960) slidesPerView = 2;
     else if (containerWidth <= 1280) slidesPerView = 3;
-    const gap = 24; // gap between slides in px
-    setSlideWidth((containerWidth - gap * (slidesPerView - 1)) / slidesPerView);
+    const gap = 48; // gap between slides in px (increased for shadow visibility)
+    const horizontalPadding = 96; // px * 2 (48px on each side)
+    setSlideWidth((containerWidth - gap * (slidesPerView - 1) - horizontalPadding) / slidesPerView);
     emblaApi?.reInit(); // reinitialize to recalc loop
   }, [emblaApi]);
 
@@ -76,13 +77,19 @@ function CategorySection({ category, projects }) {
           <Box
             sx={{
               display: "flex",
-              gap: "24px",
-              px: "24px", // half gap on sides for first/last slide
+              gap: "48px", // Increased gap for shadow visibility
+              px: "48px", // Increased horizontal padding for shadows
               py: "40px", // Extra padding for hover shadow visibility
             }}
           >
             {projects.map((project) => (
-              <Box key={project.id} sx={{ flex: `0 0 ${slideWidth}px` }}>
+              <Box
+                key={project.id}
+                sx={{
+                  flex: `0 0 ${slideWidth}px`,
+                  overflow: 'visible', // Allow shadows to extend beyond slide bounds
+                }}
+              >
                 <ProjectThumbnail project={project} />
               </Box>
             ))}

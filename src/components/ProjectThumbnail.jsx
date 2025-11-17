@@ -15,6 +15,7 @@ function ProjectThumbnail({ project }) {
         aspectRatio: '1 / 1', // Creates a 1:1 aspect ratio
         textDecoration: 'none',
         cursor: 'pointer',
+        overflow: 'visible', // Allow shadow to extend beyond card
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
           transform: 'translateY(-5px)',

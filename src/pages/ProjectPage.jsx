@@ -121,30 +121,51 @@ function ProjectPage() {
           Gallery
         </Typography>
 
-        <Grid container spacing={2}>
-          {project.images.map((image, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card
-                sx={{
-                  cursor: 'pointer',
-                  '&:hover': {
-                    transform: 'scale(1.05)',
-                    transition: 'transform 0.2s',
-                  },
-                }}
-                onClick={() => handleOpenLightbox(index)}
-              >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={image.url}
-                  alt={`${project.title} - Image ${index + 1}`}
-                  loading="lazy"
-                  sx={{ objectFit: 'cover' }}
-                />
-              </Card>
-            </Grid>
-          ))}
+        <Grid container spacing={2} justifyContent={project.images.length <= 2 ? 'center' : 'flex-start'}>
+          {project.images.map((image, index) => {
+            // Dynamically adjust grid sizes based on image count
+            let gridSizes = {};
+            const imageCount = project.images.length;
+
+            if (imageCount === 1) {
+              // Single image: make it large but not full width
+              gridSizes = { xs: 12, sm: 12, md: 8, lg: 6 };
+            } else if (imageCount === 2) {
+              // Two images: side by side on larger screens
+              gridSizes = { xs: 12, sm: 6, md: 6, lg: 6 };
+            } else if (imageCount <= 4) {
+              // 3-4 images: medium size
+              gridSizes = { xs: 12, sm: 6, md: 6, lg: 4 };
+            } else {
+              // 5+ images: smaller grid
+              gridSizes = { xs: 12, sm: 6, md: 4, lg: 3 };
+            }
+
+            return (
+              <Grid item {...gridSizes} key={index}>
+                <Card
+                  sx={{
+                    cursor: 'pointer',
+                    height: imageCount <= 4 ? 400 : 200,
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                      transition: 'transform 0.2s',
+                    },
+                  }}
+                  onClick={() => handleOpenLightbox(index)}
+                >
+                  <CardMedia
+                    component="img"
+                    height="100%"
+                    image={image.url}
+                    alt={`${project.title} - Image ${index + 1}`}
+                    loading="lazy"
+                    sx={{ objectFit: 'cover' }}
+                  />
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
 
         {project.images.length === 0 && (

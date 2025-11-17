@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useParams, useLocation, Link } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -12,9 +12,14 @@ import {
   Button,
   Dialog,
   IconButton,
-} from '@mui/material';
-import { ArrowBack, Close, ChevronLeft, ChevronRight } from '@mui/icons-material';
-import YouTubeEmbed from '../components/YouTubeEmbed';
+} from "@mui/material";
+import {
+  ArrowBack,
+  Close,
+  ChevronLeft,
+  ChevronRight,
+} from "@mui/icons-material";
+import YouTubeEmbed from "../components/YouTubeEmbed";
 
 function CategoryPage() {
   const { categoryName } = useParams();
@@ -29,7 +34,7 @@ function CategoryPage() {
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data.json`)
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to load portfolio data');
+        if (!res.ok) throw new Error("Failed to load portfolio data");
         return res.json();
       })
       .then((json) => {
@@ -50,7 +55,7 @@ function CategoryPage() {
       if (element) {
         // Small delay to ensure content is rendered
         setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 100);
       }
     }
@@ -66,33 +71,48 @@ function CategoryPage() {
     setLightboxOpen(false);
   };
 
-  const currentLightboxProject = data?.projects?.find((p) => p.id === lightboxProjectId);
+  const currentLightboxProject = data?.projects?.find(
+    (p) => p.id === lightboxProjectId
+  );
 
   const handlePrevious = () => {
     if (!currentLightboxProject) return;
-    setLightboxIndex((prev) => (prev - 1 + currentLightboxProject.images.length) % currentLightboxProject.images.length);
+    setLightboxIndex(
+      (prev) =>
+        (prev - 1 + currentLightboxProject.images.length) %
+        currentLightboxProject.images.length
+    );
   };
 
   const handleNext = () => {
     if (!currentLightboxProject) return;
-    setLightboxIndex((prev) => (prev + 1) % currentLightboxProject.images.length);
+    setLightboxIndex(
+      (prev) => (prev + 1) % currentLightboxProject.images.length
+    );
   };
 
   const handleKeyPress = (e) => {
     if (!lightboxOpen) return;
-    if (e.key === 'Escape') handleCloseLightbox();
-    if (e.key === 'ArrowLeft') handlePrevious();
-    if (e.key === 'ArrowRight') handleNext();
+    if (e.key === "Escape") handleCloseLightbox();
+    if (e.key === "ArrowLeft") handlePrevious();
+    if (e.key === "ArrowRight") handleNext();
   };
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   });
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "80vh",
+        }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -107,13 +127,20 @@ function CategoryPage() {
   }
 
   const category = data?.categories?.find((cat) => cat.name === categoryName);
-  const projects = data?.projects?.filter((project) => project.category === categoryName) || [];
+  const projects =
+    data?.projects?.filter((project) => project.category === categoryName) ||
+    [];
 
   if (!category) {
     return (
       <Container sx={{ py: 8 }}>
         <Alert severity="error">Category not found</Alert>
-        <Button component={Link} to="/" startIcon={<ArrowBack />} sx={{ mt: 2 }}>
+        <Button
+          component={Link}
+          to="/"
+          startIcon={<ArrowBack />}
+          sx={{ mt: 2 }}
+        >
           To Home
         </Button>
       </Container>
@@ -123,9 +150,14 @@ function CategoryPage() {
   return (
     <>
       {/* Header */}
-      <Box sx={{ backgroundColor: 'secondary.main', py: { xs: 4, md: 6 } }}>
+      <Box sx={{ backgroundColor: "secondary.main", py: { xs: 4, md: 6 } }}>
         <Container>
-          <Button component={Link} to="/" startIcon={<ArrowBack />} sx={{ mb: 2 }}>
+          <Button
+            component={Link}
+            to="/"
+            startIcon={<ArrowBack />}
+            sx={{ mb: 2 }}
+          >
             To Home
           </Button>
           <Typography variant="h2" gutterBottom>
@@ -137,7 +169,7 @@ function CategoryPage() {
       {/* Projects Content */}
       <Container sx={{ pt: 3, pb: 6 }}>
         {projects.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 8 }}>
+          <Box sx={{ textAlign: "center", py: 8 }}>
             <Typography variant="h6" color="text.secondary">
               No projects found in this category
             </Typography>
@@ -146,11 +178,22 @@ function CategoryPage() {
           projects.map((project, projectIndex) => (
             <Box key={project.id} id={project.id}>
               {/* Divider (same style as HomePage) */}
-              <Box sx={{ height: 2, backgroundColor: 'primary.main', mb: 6, mt: projectIndex === 0 ? 0 : 8 }} />
+              <Box
+                sx={{
+                  height: 2,
+                  backgroundColor: "primary.main",
+                  mb: "15px",
+                  mt: projectIndex === 0 ? 0 : 8,
+                }}
+              />
 
               {/* Project Header */}
               <Box sx={{ mb: 4 }}>
-                <Typography variant="h3" gutterBottom sx={{ color: 'primary.main' }}>
+                <Typography
+                  variant="h3"
+                  gutterBottom
+                  sx={{ color: "primary.main" }}
+                >
                   {project.title}
                 </Typography>
                 <Typography variant="body1" color="text.secondary" paragraph>
@@ -161,11 +204,13 @@ function CategoryPage() {
               {/* Gallery */}
               {project.images.length > 0 && (
                 <Box sx={{ mb: 6 }}>
-                  <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-                    Gallery
-                  </Typography>
-
-                  <Grid container spacing={2} justifyContent={project.images.length <= 2 ? 'center' : 'flex-start'}>
+                  <Grid
+                    container
+                    spacing={2}
+                    justifyContent={
+                      project.images.length <= 2 ? "center" : "flex-start"
+                    }
+                  >
                     {project.images.map((image, index) => {
                       // Dynamically adjust grid sizes based on image count
                       let gridSizes = {};
@@ -189,13 +234,15 @@ function CategoryPage() {
                         <Grid item {...gridSizes} key={index}>
                           <Card
                             sx={{
-                              cursor: 'pointer',
-                              '&:hover': {
-                                transform: 'scale(1.05)',
-                                transition: 'transform 0.2s',
+                              cursor: "pointer",
+                              "&:hover": {
+                                transform: "scale(1.05)",
+                                transition: "transform 0.2s",
                               },
                             }}
-                            onClick={() => handleOpenLightbox(project.id, index)}
+                            onClick={() =>
+                              handleOpenLightbox(project.id, index)
+                            }
                           >
                             <CardMedia
                               component="img"
@@ -203,10 +250,10 @@ function CategoryPage() {
                               alt={`${project.title} - Image ${index + 1}`}
                               loading="lazy"
                               sx={{
-                                width: '100%',
-                                height: 'auto',
-                                display: 'block',
-                                backgroundColor: 'background.default'
+                                width: "100%",
+                                height: "auto",
+                                display: "block",
+                                backgroundColor: "background.default",
                               }}
                             />
                           </Card>
@@ -239,34 +286,41 @@ function CategoryPage() {
         fullWidth
         PaperProps={{
           sx: {
-            backgroundColor: 'rgb(26, 21, 34)',
-            backgroundImage: 'none',
+            backgroundColor: "rgb(26, 21, 34)",
+            backgroundImage: "none",
           },
         }}
       >
         {currentLightboxProject && (
-          <Box sx={{ position: 'relative', p: 2 }}>
+          <Box sx={{ position: "relative", p: 2 }}>
             <IconButton
               onClick={handleCloseLightbox}
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 right: 8,
                 top: 8,
-                color: 'primary.main',
+                color: "primary.main",
                 zIndex: 1,
               }}
             >
               <Close />
             </IconButton>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: { xs: '50vh', sm: '70vh' } }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: { xs: "50vh", sm: "70vh" },
+              }}
+            >
               {currentLightboxProject.images.length > 1 && (
                 <IconButton
                   onClick={handlePrevious}
                   sx={{
-                    position: 'absolute',
+                    position: "absolute",
                     left: 8,
-                    color: 'primary.main',
+                    color: "primary.main",
                   }}
                 >
                   <ChevronLeft fontSize="large" />
@@ -275,12 +329,16 @@ function CategoryPage() {
 
               <Box
                 component="img"
-                src={`${import.meta.env.BASE_URL}${currentLightboxProject.images[lightboxIndex]?.url}`}
-                alt={`${currentLightboxProject.title} - Image ${lightboxIndex + 1}`}
+                src={`${import.meta.env.BASE_URL}${
+                  currentLightboxProject.images[lightboxIndex]?.url
+                }`}
+                alt={`${currentLightboxProject.title} - Image ${
+                  lightboxIndex + 1
+                }`}
                 sx={{
-                  maxWidth: '100%',
-                  maxHeight: { xs: '60vh', sm: '80vh' },
-                  objectFit: 'contain',
+                  maxWidth: "100%",
+                  maxHeight: { xs: "60vh", sm: "80vh" },
+                  objectFit: "contain",
                 }}
               />
 
@@ -288,9 +346,9 @@ function CategoryPage() {
                 <IconButton
                   onClick={handleNext}
                   sx={{
-                    position: 'absolute',
+                    position: "absolute",
                     right: 8,
-                    color: 'primary.main',
+                    color: "primary.main",
                   }}
                 >
                   <ChevronRight fontSize="large" />

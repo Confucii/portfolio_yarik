@@ -24,7 +24,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: [
-      "PT Sans",
+      "Titillium Web",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',
@@ -36,11 +36,11 @@ const theme = createTheme({
       letterSpacing: "-0.01em",
     },
     h2: {
-      fontWeight: 700,
+      fontWeight: 600,
       letterSpacing: "-0.005em",
     },
     h3: {
-      fontWeight: 700,
+      fontWeight: 600,
     },
   },
   shape: {

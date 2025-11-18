@@ -9,7 +9,7 @@ import "./fonts.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter basename="/portfolio_yarik/">
+    <BrowserRouter basename="/portfolio/">
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <App />

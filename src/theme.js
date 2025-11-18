@@ -24,7 +24,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: [
-      "SF Pro Display",
+      "Titillium Web",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',
@@ -33,11 +33,11 @@ const theme = createTheme({
     ].join(","),
     h1: {
       fontWeight: 700,
-      letterSpacing: "-0.02em",
+      letterSpacing: "-0.01em",
     },
     h2: {
       fontWeight: 600,
-      letterSpacing: "-0.01em",
+      letterSpacing: "-0.005em",
     },
     h3: {
       fontWeight: 600,

@@ -6,8 +6,12 @@
 **Current State:** Initial setup - repository is in early development stage
 **Primary Branch:** `main`
 **Development Branch Pattern:** `claude/claude-md-*` for AI-assisted development
+**Deployment URL:** https://yar-vol.github.io/portfolio/
+**Base Path:** `/portfolio/` (GitHub Pages subpath deployment)
 
 This is a personal portfolio repository for Yarik. The project is in its initial stages and ready for technology stack selection and implementation.
+
+**IMPORTANT:** This portfolio is deployed to GitHub Pages at a subpath (`/portfolio/`), not at the root. All configurations must account for this base path to ensure assets, routing, and links work correctly.
 
 ---
 
@@ -87,6 +91,333 @@ When a user requests to set up the portfolio, AI assistants should:
 2. **Propose appropriate stack** based on responses
 
 3. **Set up complete project structure** with all necessary files
+
+---
+
+## GitHub Pages Subpath Configuration
+
+**CRITICAL:** This portfolio deploys to `https://yar-vol.github.io/portfolio/`, which uses the `/portfolio/` base path. All frameworks must be configured to handle this subpath correctly.
+
+### Why This Matters
+
+When deploying to a GitHub Pages subpath (e.g., `/portfolio/`), the following issues occur without proper configuration:
+- ❌ Assets (CSS, JS, images) fail to load (404 errors)
+- ❌ Client-side routing breaks (incorrect URLs)
+- ❌ Internal links point to wrong paths
+- ❌ API calls use incorrect base URLs
+
+### Configuration by Framework
+
+#### Next.js Configuration
+
+For Next.js, configure the base path in `next.config.js` or `next.config.mjs`:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Required for GitHub Pages subpath deployment
+  basePath: '/portfolio',
+  assetPrefix: '/portfolio',
+
+  // For static export (required for GitHub Pages)
+  output: 'export',
+
+  // Disable image optimization for static export
+  images: {
+    unoptimized: true,
+  },
+
+  // Optional: trailing slash for better compatibility
+  trailingSlash: true,
+}
+
+module.exports = nextConfig
+```
+
+**Key points:**
+- `basePath`: Adds `/portfolio` prefix to all pages and routes
+- `assetPrefix`: Ensures all assets load from `/portfolio/` path
+- `output: 'export'`: Generates static HTML (required for GitHub Pages)
+- `images.unoptimized`: Disables Next.js Image Optimization (not available on static hosting)
+
+**Testing locally with base path:**
+```bash
+npm run build
+npm run start
+# Visit http://localhost:3000/portfolio
+```
+
+#### Vite (React) Configuration
+
+For Vite projects, configure the base path in `vite.config.ts`:
+
+```typescript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+
+  // Required for GitHub Pages subpath deployment
+  base: '/portfolio/',
+
+  // Optional: build output directory
+  build: {
+    outDir: 'dist',
+  },
+})
+```
+
+**Key points:**
+- `base`: Sets the public base path for all assets and routes
+- Must include trailing slash: `/portfolio/`
+
+**Using base path in code:**
+```typescript
+// For router (react-router-dom)
+import { BrowserRouter } from 'react-router-dom'
+
+<BrowserRouter basename="/portfolio">
+  <App />
+</BrowserRouter>
+
+// For asset imports
+// Vite automatically handles this with the base config
+import logo from './assets/logo.png' // Will resolve to /portfolio/assets/logo.png
+```
+
+**Testing locally with base path:**
+```bash
+npm run build
+npm run preview
+# Visit http://localhost:4173/portfolio
+```
+
+#### Static HTML/CSS/JS Configuration
+
+For static sites without a build tool, manually prefix all paths:
+
+**HTML file paths:**
+```html
+<!-- ❌ Wrong - Root-relative paths -->
+<link rel="stylesheet" href="/styles/main.css">
+<script src="/js/app.js"></script>
+<img src="/images/logo.png" alt="Logo">
+
+<!-- ✅ Correct - With base path -->
+<link rel="stylesheet" href="/portfolio/styles/main.css">
+<script src="/portfolio/js/app.js"></script>
+<img src="/portfolio/images/logo.png" alt="Logo">
+
+<!-- ✅ Alternative - Relative paths (preferred for static sites) -->
+<link rel="stylesheet" href="./styles/main.css">
+<script src="./js/app.js"></script>
+<img src="./images/logo.png" alt="Logo">
+```
+
+**JavaScript paths:**
+```javascript
+// ❌ Wrong
+fetch('/api/data.json')
+
+// ✅ Correct - With base path
+fetch('/portfolio/api/data.json')
+
+// ✅ Best - Use relative paths or base URL variable
+const BASE_PATH = '/portfolio'
+fetch(`${BASE_PATH}/api/data.json`)
+```
+
+**CSS asset paths:**
+```css
+/* ❌ Wrong */
+background-image: url('/images/bg.jpg');
+
+/* ✅ Correct - With base path */
+background-image: url('/portfolio/images/bg.jpg');
+
+/* ✅ Best - Relative paths */
+background-image: url('../images/bg.jpg');
+```
+
+### Router Configuration
+
+If using client-side routing, configure the base path:
+
+**React Router:**
+```typescript
+import { BrowserRouter } from 'react-router-dom'
+
+function App() {
+  return (
+    <BrowserRouter basename="/portfolio">
+      {/* Routes */}
+    </BrowserRouter>
+  )
+}
+```
+
+**Vue Router:**
+```javascript
+const router = createRouter({
+  history: createWebHistory('/portfolio/'),
+  routes,
+})
+```
+
+### GitHub Pages Deployment Setup
+
+**1. Configure GitHub Pages:**
+- Go to repository Settings → Pages
+- Source: Deploy from a branch
+- Branch: `main` (or `gh-pages`)
+- Folder: `/ (root)` or `/docs` depending on build output location
+
+**2. Build and Deploy Workflow:**
+
+Create `.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist  # or ./out for Next.js
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+### Testing Base Path Configuration
+
+**Checklist before deployment:**
+- [ ] All assets load correctly (check browser DevTools Network tab)
+- [ ] Navigation/routing works (no 404s)
+- [ ] Images display properly
+- [ ] CSS and JS files load
+- [ ] Internal links work correctly
+- [ ] Test with `npm run build` and preview locally
+
+**Local testing:**
+```bash
+# Build the project
+npm run build
+
+# Preview the build (tests production build locally)
+npm run preview  # Vite
+# or
+npm run start    # Next.js
+
+# Visit http://localhost:XXXX/portfolio (note the /portfolio path)
+```
+
+### Common Path Issues & Solutions
+
+**Issue 1: Assets return 404**
+```
+Problem: GET https://yar-vol.github.io/assets/logo.png → 404
+Solution: Add base path → /portfolio/assets/logo.png
+```
+
+**Issue 2: Routing doesn't work**
+```
+Problem: Clicking links leads to 404 pages
+Solution: Configure router basename to '/portfolio'
+```
+
+**Issue 3: Homepage shows blank page**
+```
+Problem: App loads but shows blank screen
+Solution: Check console for asset loading errors, ensure base path is set
+```
+
+**Issue 4: Works locally but not on GitHub Pages**
+```
+Problem: Everything works on localhost but breaks on deployment
+Solution: Test with npm run preview and visit localhost:XXXX/portfolio
+```
+
+### Environment-Specific Configuration
+
+For applications that need different base paths in development vs production:
+
+```typescript
+// vite.config.ts
+const base = process.env.NODE_ENV === 'production' ? '/portfolio/' : '/'
+
+export default defineConfig({
+  base,
+  // ... other config
+})
+```
+
+```javascript
+// next.config.js
+const isProd = process.env.NODE_ENV === 'production'
+
+const nextConfig = {
+  basePath: isProd ? '/portfolio' : '',
+  assetPrefix: isProd ? '/portfolio' : '',
+  // ... other config
+}
+```
+
+### Package.json Scripts
+
+Add these scripts to make deployment easier:
+
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.0.0"
+  }
+}
+```
+
+**Note:** The `gh-pages` package can automate deployment but requires additional setup. GitHub Actions (shown above) is the recommended approach.
 
 ---
 
@@ -274,10 +605,14 @@ When user requests to set up the portfolio:
    - `tsconfig.json` (if TypeScript)
    - `.prettierrc` and `.eslintrc.json`
    - `README.md` with setup instructions
-4. **Create initial components** (Header, Footer, Layout)
-5. **Set up basic routing** and pages
-6. **Configure deployment** (Vercel/Netlify)
-7. **Test locally** before committing
+4. **CRITICAL: Configure base path for GitHub Pages** (see GitHub Pages Subpath Configuration section)
+   - For Next.js: Add `basePath` and `assetPrefix` to `next.config.js`
+   - For Vite: Add `base: '/portfolio/'` to `vite.config.ts`
+   - For static sites: Use relative paths or prefix all paths with `/portfolio/`
+5. **Create initial components** (Header, Footer, Layout)
+6. **Set up basic routing** and pages (with basename if using router)
+7. **Configure deployment** workflow (GitHub Actions)
+8. **Test locally with base path** before committing (use `npm run preview`)
 
 ### Adding a New Section
 
@@ -315,6 +650,12 @@ When user requests to set up the portfolio:
 ### Pre-Deployment Checklist
 
 Before deploying to production:
+- [ ] **Base path configured** for `/portfolio/` (CRITICAL!)
+  - [ ] Next.js: `basePath` and `assetPrefix` in next.config.js
+  - [ ] Vite: `base: '/portfolio/'` in vite.config.ts
+  - [ ] Router: `basename="/portfolio"` configured
+- [ ] **Tested production build locally** with `npm run preview` at `/portfolio/` path
+- [ ] All assets load correctly (check Network tab)
 - [ ] All tests passing
 - [ ] No console errors or warnings
 - [ ] Responsive on all device sizes
@@ -420,6 +761,34 @@ Core Web Vitals:
 4. Ensure all dependencies are in package.json
 5. Check Node.js version matches local
 
+### Path Configuration Issues (GitHub Pages Subpath)
+**Most common issue for this portfolio!**
+
+1. **Assets not loading (404 errors)**
+   - Check base path is configured (`/portfolio/`)
+   - For Next.js: Verify `basePath` and `assetPrefix` in next.config.js
+   - For Vite: Verify `base` in vite.config.ts
+   - Check browser DevTools Network tab for failed requests
+
+2. **Blank page after deployment**
+   - Open browser console for errors
+   - Usually caused by missing base path configuration
+   - Test locally with `npm run preview` and visit `localhost:XXXX/portfolio`
+
+3. **Router/Navigation not working**
+   - Configure router basename: `<BrowserRouter basename="/portfolio">`
+   - Verify all internal links include base path
+
+4. **Works locally but breaks on GitHub Pages**
+   - Development uses `/` but production needs `/portfolio/`
+   - Test production build locally before deploying
+   - Use environment-specific config (see GitHub Pages Subpath Configuration)
+
+5. **Images/CSS showing but JS not working**
+   - Check script tags have correct path
+   - For static sites: verify all `<script src>` paths include `/portfolio/`
+   - For bundled apps: check build output directory structure
+
 ---
 
 ## Future Enhancements Roadmap
@@ -507,12 +876,23 @@ Before committing, verify:
 ## Contact & Maintenance
 
 **Repository Owner:** Yarik
-**Last Updated:** 2025-11-17
+**Last Updated:** 2025-11-18
 **Next Review:** When major technology decisions are made
 
 ---
 
 ## Changelog
+
+### 2025-11-18
+- **CRITICAL UPDATE:** Added comprehensive GitHub Pages subpath configuration section
+- Documented `/portfolio/` base path requirement for deployment
+- Added framework-specific configuration (Next.js, Vite, Static HTML)
+- Added router configuration examples (React Router, Vue Router)
+- Added GitHub Actions deployment workflow example
+- Updated troubleshooting section with path-related issues
+- Updated pre-deployment checklist with base path verification
+- Added common path issues and solutions
+- Updated repository overview with deployment URL
 
 ### 2025-11-17
 - Initial CLAUDE.md creation

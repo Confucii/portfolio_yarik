@@ -24,7 +24,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: [
-      "Anton",
+      "Space Grotesk",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',
@@ -32,15 +32,15 @@ const theme = createTheme({
       "sans-serif",
     ].join(","),
     h1: {
-      fontWeight: 400,
-      letterSpacing: "0.02em",
+      fontWeight: 700,
+      letterSpacing: "-0.01em",
     },
     h2: {
-      fontWeight: 400,
-      letterSpacing: "0.01em",
+      fontWeight: 600,
+      letterSpacing: "-0.005em",
     },
     h3: {
-      fontWeight: 400,
+      fontWeight: 600,
     },
   },
   shape: {
